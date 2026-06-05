@@ -68,7 +68,10 @@ export default function LoginPage() {
                 className={inputClass}
                 placeholder="admin@campus.edu"
                 type="email"
-                {...register("email", { required: "Email is required" })}
+                {...register("email", {
+                  pattern: { message: "Enter a valid email address", value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+                  required: "Email is required",
+                })}
               />
             </FormField>
             <FormField error={errors.password?.message} label="Password">
@@ -76,7 +79,10 @@ export default function LoginPage() {
                 className={inputClass}
                 placeholder="Enter password"
                 type="password"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  minLength: { message: "Password must be at least 6 characters", value: 6 },
+                  required: "Password is required",
+                })}
               />
             </FormField>
             <Button className="w-full" loading={isSubmitting} size="lg" type="submit">

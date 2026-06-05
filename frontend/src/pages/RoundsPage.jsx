@@ -37,7 +37,10 @@ function RoundForm({ companyId, initialValues, onCancel, onSaved }) {
     <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-danger">{error}</div> : null}
       <FormField error={errors.roundName?.message} label="Round Name">
-        <input className={inputClass} {...register("roundName", { required: "Round name is required" })} />
+        <input className={inputClass} {...register("roundName", {
+          minLength: { message: "Round name must be at least 2 characters", value: 2 },
+          required: "Round name is required",
+        })} />
       </FormField>
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField label="Round Type">
@@ -51,7 +54,10 @@ function RoundForm({ companyId, initialValues, onCancel, onSaved }) {
           </select>
         </FormField>
         <FormField error={errors.sequence?.message} label="Sequence">
-          <input className={inputClass} type="number" {...register("sequence", { required: "Sequence is required" })} />
+          <input className={inputClass} type="number" {...register("sequence", {
+            min: { message: "Sequence must be at least 1", value: 1 },
+            required: "Sequence is required",
+          })} />
         </FormField>
       </div>
       <div className="flex justify-end gap-3 pt-2">

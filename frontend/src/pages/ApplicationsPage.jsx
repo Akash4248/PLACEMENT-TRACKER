@@ -87,6 +87,7 @@ function ApplicationForm({ companies, onCancel, onSaved, students }) {
 
 export default function ApplicationsPage() {
   const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState({ query: "", status: "" });
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
@@ -167,6 +168,46 @@ export default function ApplicationsPage() {
     setSelectedIds(new Set());
     refresh();
   };
+  const getActiveRound = (application) => {
+    const rounds = data.roundsByCompany[application.companyId?._id] || [];
+    return (
+      rounds.find((round) => round.sequence === application.currentRound) ||
+      rounds[rounds.length - 1]
+    );
+  };
+  const updateApplicationResult = async (application, result) => {
+    const round = getActiveRound(application);
+
+    if (!round?._id) {
+      toast.error("No active round found for this application");
+      return;
+    }
+
+    try {
+      await applicationsApi.updateResult(application._id, {
+        attendanceStatus: "Present",
+        attended: true,
+        result,
+        roundId: round._id,
+      });
+      toast.success(`Candidate marked ${result}`);
+      refresh();
+    } catch (err) {
+      toast.error(err.message || "Unable to update result");
+    }
+  };
+  const applyFilters = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setQuery(filters.query.trim());
+    setStatusFilter(filters.status);
+  };
+  const clearFilters = () => {
+    setFilters({ query: "", status: "" });
+    setPage(1);
+    setQuery("");
+    setStatusFilter("");
+  };
 
   return (
     <>
@@ -180,16 +221,18 @@ export default function ApplicationsPage() {
         description="Track each candidate from applied through interviews, selections, rejections, and offers."
         title="Applications"
       />
-      <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
+      <form className="mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px_auto_auto]" onSubmit={applyFilters}>
         <div className="flex h-11 items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
           <FiSearch className="h-4 w-4 text-muted" />
-          <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => { setPage(1); setQuery(event.target.value); }} placeholder="Search student, company, or status" value={query} />
+          <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => setFilters((current) => ({ ...current, query: event.target.value }))} placeholder="Search student, company, or status" value={filters.query} />
         </div>
-        <select className={inputClass} onChange={(event) => { setPage(1); setStatusFilter(event.target.value); }} value={statusFilter}>
+        <select className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))} value={filters.status}>
           <option value="">All statuses</option>
           {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
         </select>
-      </div>
+        <Button type="submit" variant="secondary"><FiSearch />Search</Button>
+        <Button onClick={clearFilters} type="button" variant="ghost">Clear</Button>
+      </form>
       {selectedCount > 0 ? (
         <div className="sticky top-20 z-20 mb-4 flex flex-col gap-3 rounded-2xl border border-border bg-white p-3 shadow-lift sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold text-ink">{selectedCount} Candidates Selected</p>
@@ -247,8 +290,8 @@ export default function ApplicationsPage() {
                   <div className="mt-4 flex flex-wrap gap-2">
                     {status !== "Selected" && status !== "Rejected" && status !== "Offer Received" ? (
                       <>
-                        <Button onClick={async () => { await applicationsApi.updateResult(application._id, { attended: true, result: "PASS" }); refresh(); }} size="sm" variant="secondary"><FiCheck />Pass</Button>
-                        <Button onClick={async () => { await applicationsApi.updateResult(application._id, { attended: true, result: "FAIL" }); refresh(); }} size="sm" variant="secondary"><FiX />Fail</Button>
+                        <Button onClick={() => updateApplicationResult(application, "PASS")} size="sm" variant="secondary"><FiCheck />Pass</Button>
+                        <Button onClick={() => updateApplicationResult(application, "FAIL")} size="sm" variant="secondary"><FiX />Fail</Button>
                       </>
                     ) : null}
                     {status === "Selected" ? (

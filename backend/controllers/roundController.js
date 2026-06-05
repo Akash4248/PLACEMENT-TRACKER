@@ -307,6 +307,7 @@ const applyAttendanceAction = async (req, attendanceStatus) => {
     let roundEntry = application.rounds.find(
       (item) => String(item.roundId) === String(round._id)
     );
+    const previousAttendanceStatus = getAttendanceStatus(roundEntry);
 
     if (!roundEntry) {
       application.rounds.push({
@@ -320,6 +321,17 @@ const applyAttendanceAction = async (req, attendanceStatus) => {
 
     roundEntry.attendanceStatus = attendanceStatus;
     roundEntry.attended = attendanceStatus === "Present";
+
+    if (
+      attendanceStatus === "Present" &&
+      previousAttendanceStatus === "Absent" &&
+      roundEntry.result === "FAIL"
+    ) {
+      roundEntry.result = "PENDING";
+      if (application.status === "Rejected" && application.currentRound === round.sequence) {
+        application.status = "In Process";
+      }
+    }
 
     if (attendanceStatus === "Absent") {
       roundEntry.result = "FAIL";

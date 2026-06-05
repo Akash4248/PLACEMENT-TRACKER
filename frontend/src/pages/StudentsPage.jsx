@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiCheckCircle, FiDownload, FiEdit2, FiEye, FiPlus, FiSearch, FiTrash2, FiUploadCloud, FiXCircle } from "react-icons/fi";
+import { FiCheckCircle, FiDownload, FiEdit2, FiEye, FiPlus, FiSearch, FiTrash2, FiUploadCloud, FiX, FiXCircle } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { studentsApi } from "../api/services";
 import Badge from "../components/ui/Badge";
@@ -72,25 +72,43 @@ function StudentForm({ initialValues, onCancel, onSaved }) {
       {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-danger">{error}</div> : null}
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField error={errors.usn?.message} label="USN">
-          <input className={inputClass} {...register("usn", { required: "USN is required" })} />
+          <input className={inputClass} {...register("usn", {
+            pattern: { message: "Use a valid USN", value: /^[A-Za-z0-9-]+$/ },
+            required: "USN is required",
+          })} />
         </FormField>
         <FormField error={errors.name?.message} label="Name">
-          <input className={inputClass} {...register("name", { required: "Name is required" })} />
+          <input className={inputClass} {...register("name", {
+            minLength: { message: "Name must be at least 2 characters", value: 2 },
+            required: "Name is required",
+          })} />
         </FormField>
         <FormField error={errors.email?.message} label="Email">
-          <input className={inputClass} type="email" {...register("email", { required: "Email is required" })} />
+          <input className={inputClass} type="email" {...register("email", {
+            pattern: { message: "Enter a valid email address", value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+            required: "Email is required",
+          })} />
         </FormField>
-        <FormField label="Phone">
-          <input className={inputClass} {...register("phone")} />
+        <FormField error={errors.phone?.message} label="Phone">
+          <input className={inputClass} {...register("phone", {
+            pattern: { message: "Enter a valid phone number", value: /^[0-9+\-\s()]{7,15}$/ },
+          })} />
         </FormField>
         <FormField error={errors.department?.message} label="Department">
           <input className={inputClass} {...register("department", { required: "Department is required" })} />
         </FormField>
         <FormField error={errors.cgpa?.message} label="CGPA">
-          <input className={inputClass} step="0.01" type="number" {...register("cgpa", { required: "CGPA is required" })} />
+          <input className={inputClass} step="0.01" type="number" {...register("cgpa", {
+            max: { message: "CGPA cannot exceed 10", value: 10 },
+            min: { message: "CGPA cannot be negative", value: 0 },
+            required: "CGPA is required",
+          })} />
         </FormField>
-        <FormField label="Graduation Year">
-          <input className={inputClass} type="number" {...register("graduationYear")} />
+        <FormField error={errors.graduationYear?.message} label="Graduation Year">
+          <input className={inputClass} type="number" {...register("graduationYear", {
+            max: { message: "Use a valid graduation year", value: 2100 },
+            min: { message: "Use a valid graduation year", value: 2000 },
+          })} />
         </FormField>
         <FormField label="Skills">
           <input className={inputClass} placeholder="React, Java, SQL" {...register("skills")} />
@@ -100,7 +118,16 @@ function StudentForm({ initialValues, onCancel, onSaved }) {
         <input
           accept=".pdf,.doc,.docx"
           className={inputClass}
-          onChange={(event) => setResumeFile(event.target.files?.[0] || null)}
+          onChange={(event) => {
+            const file = event.target.files?.[0] || null;
+            if (file && file.size > 5 * 1024 * 1024) {
+              toast.error("Resume must be 5MB or smaller");
+              event.target.value = "";
+              setResumeFile(null);
+              return;
+            }
+            setResumeFile(file);
+          }}
           type="file"
         />
       </FormField>
@@ -114,6 +141,14 @@ function StudentForm({ initialValues, onCancel, onSaved }) {
 
 export default function StudentsPage() {
   const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState({
+    department: "",
+    graduationYear: "",
+    maxCGPA: "",
+    minCGPA: "",
+    query: "",
+    resumeStatus: "",
+  });
   const [department, setDepartment] = useState("");
   const [graduationYear, setGraduationYear] = useState("");
   const [minCGPA, setMinCGPA] = useState("");
@@ -124,6 +159,7 @@ export default function StudentsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [importSummary, setImportSummary] = useState(null);
+  const [filterError, setFilterError] = useState("");
   const pageSize = 20;
   const { data, error, loading, refresh } = useAsync(async () => {
     const { data: response } = await studentsApi.list({
@@ -176,6 +212,55 @@ export default function StudentsPage() {
   };
 
   const rows = data?.students || [];
+  const applyFilters = (event) => {
+    event.preventDefault();
+    setFilterError("");
+    const min = filters.minCGPA === "" ? null : Number(filters.minCGPA);
+    const max = filters.maxCGPA === "" ? null : Number(filters.maxCGPA);
+    const year = filters.graduationYear === "" ? null : Number(filters.graduationYear);
+
+    if ((min !== null && (min < 0 || min > 10)) || (max !== null && (max < 0 || max > 10))) {
+      setFilterError("CGPA filters must be between 0 and 10.");
+      return;
+    }
+
+    if (min !== null && max !== null && min > max) {
+      setFilterError("Minimum CGPA cannot be greater than maximum CGPA.");
+      return;
+    }
+
+    if (year !== null && (year < 2000 || year > 2100)) {
+      setFilterError("Graduation year must be between 2000 and 2100.");
+      return;
+    }
+
+    setPage(1);
+    setQuery(filters.query.trim());
+    setDepartment(filters.department.trim());
+    setGraduationYear(filters.graduationYear);
+    setMinCGPA(filters.minCGPA);
+    setMaxCGPA(filters.maxCGPA);
+    setResumeStatus(filters.resumeStatus);
+  };
+  const clearFilters = () => {
+    const emptyFilters = {
+      department: "",
+      graduationYear: "",
+      maxCGPA: "",
+      minCGPA: "",
+      query: "",
+      resumeStatus: "",
+    };
+    setFilters(emptyFilters);
+    setFilterError("");
+    setPage(1);
+    setQuery("");
+    setDepartment("");
+    setGraduationYear("");
+    setMinCGPA("");
+    setMaxCGPA("");
+    setResumeStatus("");
+  };
   const columns = useMemo(() => [
     { key: "usn", header: "USN" },
     { key: "name", header: "Name", render: (row) => <div><p className="font-semibold">{row.name}</p><p className="text-xs text-muted">{row.phone || "No phone"}</p></div> },
@@ -233,22 +318,27 @@ export default function StudentsPage() {
         description="Manage student records, eligibility details, and placement-ready profiles."
         title="Students"
       />
-      <div className="mb-4 flex h-11 max-w-md items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
-        <FiSearch className="h-4 w-4 text-muted" />
-        <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => { setPage(1); setQuery(event.target.value); }} placeholder="Search student" value={query} />
-      </div>
-      <div className="mb-4 grid gap-3 md:grid-cols-5">
-        <input className={inputClass} onChange={(event) => { setPage(1); setDepartment(event.target.value); }} placeholder="Department" value={department} />
-        <input className={inputClass} onChange={(event) => { setPage(1); setGraduationYear(event.target.value); }} placeholder="Graduation year" type="number" value={graduationYear} />
-        <input className={inputClass} onChange={(event) => { setPage(1); setMinCGPA(event.target.value); }} placeholder="Min CGPA" step="0.1" type="number" value={minCGPA} />
-        <input className={inputClass} onChange={(event) => { setPage(1); setMaxCGPA(event.target.value); }} placeholder="Max CGPA" step="0.1" type="number" value={maxCGPA} />
-        <select className={inputClass} onChange={(event) => { setPage(1); setResumeStatus(event.target.value); }} value={resumeStatus}>
-          <option value="">All resume statuses</option>
-          <option value="Pending">Pending</option>
-          <option value="Verified">Verified</option>
-          <option value="Rejected">Rejected</option>
-        </select>
-      </div>
+      <form className="mb-4 space-y-3" onSubmit={applyFilters}>
+        <div className="flex h-11 max-w-md items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
+          <FiSearch className="h-4 w-4 text-muted" />
+          <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => setFilters((current) => ({ ...current, query: event.target.value }))} placeholder="Search student" value={filters.query} />
+        </div>
+        <div className="grid gap-3 md:grid-cols-[repeat(5,minmax(0,1fr))_auto_auto]">
+          <input className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, department: event.target.value }))} placeholder="Department" value={filters.department} />
+          <input className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, graduationYear: event.target.value }))} placeholder="Graduation year" type="number" value={filters.graduationYear} />
+          <input className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, minCGPA: event.target.value }))} placeholder="Min CGPA" step="0.1" type="number" value={filters.minCGPA} />
+          <input className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, maxCGPA: event.target.value }))} placeholder="Max CGPA" step="0.1" type="number" value={filters.maxCGPA} />
+          <select className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, resumeStatus: event.target.value }))} value={filters.resumeStatus}>
+            <option value="">All resume statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Verified">Verified</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+          <Button type="submit" variant="secondary"><FiSearch />Search</Button>
+          <Button onClick={clearFilters} type="button" variant="ghost"><FiX />Clear</Button>
+        </div>
+        {filterError ? <p className="text-sm font-medium text-danger">{filterError}</p> : null}
+      </form>
       <DataTable columns={columns} empty={{ title: "No students yet", description: "Add student records to start tracking applications." }} rows={rows} />
       <Pagination
         currentPage={data?.currentPage || page}

@@ -68,7 +68,10 @@ export default function SignupPage() {
             <input
               className={inputClass}
               placeholder="Placement Officer"
-              {...register("name", { required: "Name is required" })}
+              {...register("name", {
+                minLength: { message: "Name must be at least 2 characters", value: 2 },
+                required: "Name is required",
+              })}
             />
           </FormField>
           <FormField error={errors.email?.message} label="Email">
@@ -76,7 +79,10 @@ export default function SignupPage() {
               className={inputClass}
               placeholder="officer@campus.edu"
               type="email"
-              {...register("email", { required: "Email is required" })}
+              {...register("email", {
+                pattern: { message: "Enter a valid email address", value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+                required: "Email is required",
+              })}
             />
           </FormField>
           <FormField error={errors.password?.message} label="Password">

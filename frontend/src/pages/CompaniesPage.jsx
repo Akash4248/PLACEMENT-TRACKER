@@ -65,19 +65,34 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
       {error ? <div className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-danger">{error}</div> : null}
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField error={errors.companyName?.message} label="Company Name">
-          <input className={inputClass} {...register("companyName", { required: "Company name is required" })} />
+          <input className={inputClass} {...register("companyName", {
+            minLength: { message: "Company name must be at least 2 characters", value: 2 },
+            required: "Company name is required",
+          })} />
         </FormField>
         <FormField error={errors.package?.message} label="Package (LPA)">
-          <input className={inputClass} step="0.1" type="number" {...register("package", { required: "Package is required" })} />
+          <input className={inputClass} step="0.1" type="number" {...register("package", {
+            min: { message: "Package cannot be negative", value: 0 },
+            required: "Package is required",
+          })} />
         </FormField>
         <FormField error={errors.location?.message} label="Location">
-          <input className={inputClass} {...register("location", { required: "Location is required" })} />
+          <input className={inputClass} {...register("location", {
+            minLength: { message: "Location must be at least 2 characters", value: 2 },
+            required: "Location is required",
+          })} />
         </FormField>
-        <FormField label="Eligibility CGPA">
-          <input className={inputClass} step="0.1" type="number" {...register("eligibilityCGPA")} />
+        <FormField error={errors.eligibilityCGPA?.message} label="Eligibility CGPA">
+          <input className={inputClass} step="0.1" type="number" {...register("eligibilityCGPA", {
+            max: { message: "CGPA cannot exceed 10", value: 10 },
+            min: { message: "CGPA cannot be negative", value: 0 },
+          })} />
         </FormField>
-        <FormField label="Minimum CGPA">
-          <input className={inputClass} step="0.1" type="number" {...register("minimumCGPA")} />
+        <FormField error={errors.minimumCGPA?.message} label="Minimum CGPA">
+          <input className={inputClass} step="0.1" type="number" {...register("minimumCGPA", {
+            max: { message: "CGPA cannot exceed 10", value: 10 },
+            min: { message: "CGPA cannot be negative", value: 0 },
+          })} />
         </FormField>
         <FormField label="Allowed Departments">
           <input className={inputClass} placeholder="CSE, ISE, AIML" {...register("allowedDepartments")} />
@@ -85,8 +100,10 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
         <FormField label="Allowed Graduation Years">
           <input className={inputClass} placeholder="2025, 2026" {...register("allowedGraduationYears")} />
         </FormField>
-        <FormField label="Drive Date">
-          <input className={inputClass} type="date" {...register("driveDate")} />
+        <FormField error={errors.driveDate?.message} label="Drive Date">
+          <input className={inputClass} type="date" {...register("driveDate", {
+            validate: (value) => !value || !Number.isNaN(new Date(value).getTime()) || "Use a valid drive date",
+          })} />
         </FormField>
         <FormField label="Status">
           <select className={inputClass} {...register("status")}>
@@ -109,6 +126,13 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
 
 export default function CompaniesPage() {
   const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState({
+    eligibilityCGPA: "",
+    maxPackage: "",
+    minPackage: "",
+    query: "",
+    status: "",
+  });
   const [status, setStatus] = useState("");
   const [minPackage, setMinPackage] = useState("");
   const [maxPackage, setMaxPackage] = useState("");
@@ -120,6 +144,7 @@ export default function CompaniesPage() {
   const [eligibility, setEligibility] = useState(null);
   const [eligibilityLoading, setEligibilityLoading] = useState(false);
   const [eligibilityError, setEligibilityError] = useState("");
+  const [filterError, setFilterError] = useState("");
   const pageSize = 20;
   const { data, error, loading, refresh } = useAsync(async () => {
     const { data: response } = await companiesApi.list({
@@ -134,6 +159,53 @@ export default function CompaniesPage() {
     return response;
   }, [query, status, minPackage, maxPackage, eligibilityCGPA, page]);
   const rows = data?.companies || [];
+
+  const applyFilters = (event) => {
+    event.preventDefault();
+    setFilterError("");
+    const min = filters.minPackage === "" ? null : Number(filters.minPackage);
+    const max = filters.maxPackage === "" ? null : Number(filters.maxPackage);
+    const cgpa = filters.eligibilityCGPA === "" ? null : Number(filters.eligibilityCGPA);
+
+    if ((min !== null && min < 0) || (max !== null && max < 0)) {
+      setFilterError("Package filters cannot be negative.");
+      return;
+    }
+
+    if (min !== null && max !== null && min > max) {
+      setFilterError("Minimum package cannot be greater than maximum package.");
+      return;
+    }
+
+    if (cgpa !== null && (cgpa < 0 || cgpa > 10)) {
+      setFilterError("Eligibility CGPA must be between 0 and 10.");
+      return;
+    }
+
+    setPage(1);
+    setQuery(filters.query.trim());
+    setStatus(filters.status);
+    setMinPackage(filters.minPackage);
+    setMaxPackage(filters.maxPackage);
+    setEligibilityCGPA(filters.eligibilityCGPA);
+  };
+  const clearFilters = () => {
+    const emptyFilters = {
+      eligibilityCGPA: "",
+      maxPackage: "",
+      minPackage: "",
+      query: "",
+      status: "",
+    };
+    setFilters(emptyFilters);
+    setFilterError("");
+    setPage(1);
+    setQuery("");
+    setStatus("");
+    setMinPackage("");
+    setMaxPackage("");
+    setEligibilityCGPA("");
+  };
 
   const viewEligibility = async (company) => {
     setEligibilityCompany(company);
@@ -181,21 +253,26 @@ export default function CompaniesPage() {
         description="Maintain recruiting companies, packages, eligibility rules, and drive status."
         title="Companies"
       />
-      <div className="mb-4 flex h-11 max-w-md items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
-        <FiSearch className="h-4 w-4 text-muted" />
-        <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => { setPage(1); setQuery(event.target.value); }} placeholder="Search company or location" value={query} />
-      </div>
-      <div className="mb-4 grid gap-3 md:grid-cols-4">
-        <select className={inputClass} onChange={(event) => { setPage(1); setStatus(event.target.value); }} value={status}>
-          <option value="">All statuses</option>
-          <option value="Upcoming">Upcoming</option>
-          <option value="Ongoing">Ongoing</option>
-          <option value="Completed">Completed</option>
-        </select>
-        <input className={inputClass} onChange={(event) => { setPage(1); setMinPackage(event.target.value); }} placeholder="Min package" step="0.1" type="number" value={minPackage} />
-        <input className={inputClass} onChange={(event) => { setPage(1); setMaxPackage(event.target.value); }} placeholder="Max package" step="0.1" type="number" value={maxPackage} />
-        <input className={inputClass} onChange={(event) => { setPage(1); setEligibilityCGPA(event.target.value); }} placeholder="Student CGPA eligibility" step="0.1" type="number" value={eligibilityCGPA} />
-      </div>
+      <form className="mb-4 space-y-3" onSubmit={applyFilters}>
+        <div className="flex h-11 max-w-md items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
+          <FiSearch className="h-4 w-4 text-muted" />
+          <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => setFilters((current) => ({ ...current, query: event.target.value }))} placeholder="Search company or location" value={filters.query} />
+        </div>
+        <div className="grid gap-3 md:grid-cols-[repeat(4,minmax(0,1fr))_auto_auto]">
+          <select className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))} value={filters.status}>
+            <option value="">All statuses</option>
+            <option value="Upcoming">Upcoming</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <input className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, minPackage: event.target.value }))} placeholder="Min package" step="0.1" type="number" value={filters.minPackage} />
+          <input className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, maxPackage: event.target.value }))} placeholder="Max package" step="0.1" type="number" value={filters.maxPackage} />
+          <input className={inputClass} onChange={(event) => setFilters((current) => ({ ...current, eligibilityCGPA: event.target.value }))} placeholder="Student CGPA eligibility" step="0.1" type="number" value={filters.eligibilityCGPA} />
+          <Button type="submit" variant="secondary"><FiSearch />Search</Button>
+          <Button onClick={clearFilters} type="button" variant="ghost">Clear</Button>
+        </div>
+        {filterError ? <p className="text-sm font-medium text-danger">{filterError}</p> : null}
+      </form>
       <DataTable columns={columns} empty={{ title: "No companies yet", description: "Create a company drive before adding rounds or applications." }} rows={rows} />
       <Pagination
         currentPage={data?.currentPage || page}
