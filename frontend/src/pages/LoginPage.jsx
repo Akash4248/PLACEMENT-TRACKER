@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiArrowRight, FiBriefcase } from "react-icons/fi";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import AuthShell from "../components/auth/AuthShell";
 import Button from "../components/ui/Button";
 import FormField, { inputClass } from "../components/ui/FormField";
 import { useAuth } from "../context/AuthContext";
@@ -38,41 +39,12 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="grid min-h-screen bg-canvas p-4 lg:grid-cols-[1fr_520px] lg:p-0">
-      <section className="hidden border-r border-border bg-white p-12 lg:flex lg:flex-col lg:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-white">
-            <FiBriefcase className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-lg font-bold text-ink">CampusTrack</p>
-            <p className="text-sm text-muted">Campus Interview Tracking</p>
-          </div>
-        </div>
-        <div className="max-w-xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-primary">Placement operations</p>
-          <h1 className="mt-4 text-4xl font-bold leading-tight text-ink">
-            Manage students, drives, rounds, and offers with quiet confidence.
-          </h1>
-          <p className="mt-5 text-base leading-7 text-muted">
-            A clean command center for placement teams to keep interviews moving and results visible.
-          </p>
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          {["JWT auth", "Live KPIs", "Kanban flow"].map((item) => (
-            <div className="rounded-2xl border border-border bg-slate-50 p-4 text-sm font-semibold text-ink" key={item}>
-              {item}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex items-center justify-center">
+    <AuthShell>
         <motion.div
-          className="w-full max-w-md rounded-2xl border border-border bg-white p-6 shadow-card sm:p-8"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
+          className="w-full max-w-md rounded-2xl border border-border bg-white/95 p-6 shadow-lift backdrop-blur sm:p-8"
+          initial={{ opacity: 0, y: 18, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.24 }}
         >
           <div className="mb-8 lg:hidden">
             <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary text-white">
@@ -110,8 +82,14 @@ export default function LoginPage() {
               <FiArrowRight className="h-4 w-4" />
             </Button>
           </form>
+
+          <p className="mt-5 text-center text-sm text-muted">
+            New to CampusTrack?{" "}
+            <Link className="font-semibold text-primary hover:text-primary-hover" to="/signup">
+              Create account
+            </Link>
+          </p>
         </motion.div>
-      </section>
-    </main>
+    </AuthShell>
   );
 }

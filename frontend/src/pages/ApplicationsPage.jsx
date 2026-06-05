@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiCheck, FiGift, FiPlus, FiTrash2, FiX } from "react-icons/fi";
+import { FiCheck, FiGift, FiPlus, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import { applicationsApi, companiesApi, studentsApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -9,6 +9,7 @@ import FormField, { inputClass } from "../components/ui/FormField";
 import Modal from "../components/ui/Modal";
 import PageHeader from "../components/ui/PageHeader";
 import { EmptyState, ErrorState, LoadingState } from "../components/ui/StateBlock";
+import UploadPreviewModal from "../components/ui/UploadPreviewModal";
 import useAsync from "../hooks/useAsync";
 
 const statuses = ["Applied", "In Process", "Selected", "Rejected", "Offer Received"];
@@ -54,6 +55,8 @@ function ApplicationForm({ companies, onCancel, onSaved, students }) {
 
 export default function ApplicationsPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkSummary, setBulkSummary] = useState(null);
   const { data, error, loading, refresh } = useAsync(async () => {
     const [applicationsRes, studentsRes, companiesRes] = await Promise.all([
       applicationsApi.list(),
@@ -81,7 +84,12 @@ export default function ApplicationsPage() {
   return (
     <>
       <PageHeader
-        action={<Button onClick={() => setModalOpen(true)}><FiPlus />New Application</Button>}
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => { setBulkSummary(null); setBulkOpen(true); }} variant="secondary"><FiUploadCloud />Bulk Upload Results</Button>
+            <Button onClick={() => setModalOpen(true)}><FiPlus />New Application</Button>
+          </div>
+        }
         description="Track each candidate from applied through interviews, selections, rejections, and offers."
         title="Applications"
       />
@@ -133,6 +141,18 @@ export default function ApplicationsPage() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New Application">
         <ApplicationForm companies={data.companies} onCancel={() => setModalOpen(false)} onSaved={() => { setModalOpen(false); refresh(); }} students={data.students} />
       </Modal>
+      <UploadPreviewModal
+        acceptedColumns={["USN", "ROUND_ID", "RESULT"]}
+        onClose={() => setBulkOpen(false)}
+        onSubmit={async (file, onProgress) => {
+          const { data: response } = await applicationsApi.bulkResults(file, onProgress);
+          setBulkSummary(response);
+          refresh();
+        }}
+        open={bulkOpen}
+        summary={bulkSummary}
+        title="Bulk Upload Results"
+      />
     </>
   );
 }

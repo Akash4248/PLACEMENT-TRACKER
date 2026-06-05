@@ -27,6 +27,18 @@ const companySchema = new mongoose.Schema(
       default: 0,
     },
 
+    minimumCGPA: {
+      type: Number,
+      default: 0,
+    },
+
+    allowedDepartments: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
     driveDate: {
       type: Date,
     },

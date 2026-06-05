@@ -8,7 +8,9 @@ const {
   getStudent,
   updateStudent,
   deleteStudent,
+  importStudents,
 } = require("../controllers/studentController");
+const upload = require("../middleware/uploadMiddleware");
 
 const {
   protect,
@@ -17,6 +19,12 @@ const {
 router.use(protect);
 
 router.post("/", createStudent);
+
+router.post(
+  "/import",
+  upload.single("file"),
+  importStudents
+);
 
 router.get("/", getStudents);
 

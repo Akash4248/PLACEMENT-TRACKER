@@ -5,6 +5,8 @@ const router = express.Router();
 const {
   getDashboardStats,
   getCompanyAnalytics,
+  getDepartmentAnalytics,
+  getRecruitmentFunnel,
 } = require("../controllers/dashboardController");
 
 const {
@@ -21,6 +23,18 @@ router.get(
   "/company-analytics",
   protect,
   getCompanyAnalytics
+);
+
+router.get(
+  "/department-analytics",
+  protect,
+  getDepartmentAnalytics
+);
+
+router.get(
+  "/funnel",
+  protect,
+  getRecruitmentFunnel
 );
 
 module.exports = router;

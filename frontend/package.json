@@ -13,12 +13,14 @@
     "@vitejs/plugin-react": "^5.1.1",
     "axios": "^1.13.2",
     "framer-motion": "^12.23.25",
+    "papaparse": "^5.5.3",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-hook-form": "^7.68.0",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.10.1",
-    "recharts": "^3.5.1"
+    "recharts": "^3.5.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.22",

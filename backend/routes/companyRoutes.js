@@ -11,6 +11,7 @@ const {
   getCompany,
   updateCompany,
   deleteCompany,
+  getEligibleStudents,
 } = require("../controllers/companyController");
 
 const {
@@ -21,6 +22,10 @@ router.use(protect);
 
 router.post("/", createCompany);
 router.get("/", getCompanies);
+router.get(
+  "/:id/eligible-students",
+  getEligibleStudents
+);
 router.get("/:id", getCompany);
 router.put("/:id", updateCompany);
 router.delete(

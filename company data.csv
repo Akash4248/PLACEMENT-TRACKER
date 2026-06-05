@@ -1,0 +1,1001 @@
+companyName,package,location,eligibilityCGPA,driveDate,status
+Capgemini,586281,Hougang,5.1,2/16/2026,interview scheduled
+Paytm,1778188,Jifeng,8.8,7/15/2026,not selected
+Adobe,1034807,Wanquan,5.1,5/30/2026,interview scheduled
+Goldman Sachs,2171794,Sembakung,7.1,8/5/2026,pending
+Oracle,2426116,Karpogory,6.3,12/6/2026,under review
+Zoho,2690337,Vostryakovo,8.3,10/28/2026,under review
+Amazon,1386235,Tashtagol,9.2,10/16/2026,withdrawn
+Siemens,1229070,Corvite,9.5,8/24/2026,withdrawn
+Samsung,1434386,Huangqi,7.2,11/27/2026,rejected
+Goldman Sachs,537845,Conceição do Coité,6.0,1/24/2026,on hold
+Goldman Sachs,1232326,Kuching,8.3,10/31/2026,offer extended
+SAP,1716485,Mechrá Belqsiri,6.1,12/24/2026,offer extended
+Paytm,1703093,Pöytyä,9.1,8/5/2026,not selected
+TCS,1482861,Logan Lake,9.4,12/8/2026,pending
+Microsoft,590094,Zaindainxoi,5.3,6/19/2026,rejected
+Bosch,2027742,Pavlovskiy Posad,8.5,5/22/2026,not selected
+Capgemini,1582515,Buawan,8.3,11/1/2026,offer extended
+Goldman Sachs,2791467,Orurillo,5.3,6/28/2026,rejected
+Zoho,866780,Starobelokurikha,8.5,12/26/2026,interview scheduled
+Siemens,2820330,Sobinka,5.0,12/20/2026,hired
+PhonePe,2257816,Kanekomachi,9.7,5/20/2026,withdrawn
+Google,510731,Valle Grande,9.3,2/16/2026,not selected
+Cisco,2341353,Obock,8.8,12/24/2026,not selected
+Dell,2978399,Devitsa,6.6,12/6/2026,hired
+Oracle,1787460,Mārupe,8.0,3/28/2026,interview scheduled
+TCS,1540706,Cluses,8.0,5/23/2026,withdrawn
+Flipkart,2801617,Patos de Minas,8.5,6/15/2026,not selected
+Morgan Stanley,2388194,Wołczyn,6.4,9/5/2026,not selected
+Oracle,2519248,Alíartos,9.2,4/3/2026,interview scheduled
+JPMorgan,379171,Ar Riqāmā,5.9,11/29/2026,withdrawn
+Siemens,2879208,Dubreuil,8.4,7/22/2026,pending
+Infosys,1771428,Cambebba,6.4,8/11/2026,on hold
+Microsoft,366144,Liběšice,6.9,3/28/2026,on hold
+Microsoft,377777,Thị Trấn Tà Lùng,8.7,3/17/2026,withdrawn
+Bosch,2647201,Wailiang,7.9,7/2/2026,rejected
+Goldman Sachs,2822484,Arjasari,8.3,3/27/2026,withdrawn
+Amazon,2132177,Peliyagoda,6.2,9/15/2026,withdrawn
+Morgan Stanley,2217651,Queluz de Baixo,8.2,10/19/2026,waiting for response
+Nvidia,2075218,Río Ceballos,8.0,9/12/2026,hired
+JPMorgan,1839634,Chengshan,6.6,9/21/2026,under review
+Goldman Sachs,1281109,Hedong,8.0,7/28/2026,hired
+Morgan Stanley,1652104,Tran,9.0,2/17/2026,pending
+Adobe,2124857,Verkhnye Syn’ovydne,7.1,11/25/2026,waiting for response
+JPMorgan,2795342,Takehara,7.5,3/29/2026,interview scheduled
+PhonePe,2312247,Yeniköy,8.3,2/28/2026,withdrawn
+PhonePe,2746585,Danglang Hudong,8.0,6/5/2026,interview scheduled
+Dell,1558867,Ashikaga,9.4,1/12/2026,not selected
+Intel,549774,Shun’ga,5.2,4/25/2026,offer extended
+Bosch,408491,Piteå,7.0,1/22/2026,hired
+Accenture,1552004,Kunda,6.1,11/20/2026,interview scheduled
+JPMorgan,1686115,Saint-Louis du Nord,6.5,10/21/2026,offer extended
+Morgan Stanley,1617394,Tromsø,7.1,3/19/2026,on hold
+Siemens,621643,Heshi,5.1,6/4/2026,under review
+Infosys,343089,Qingyuan,5.6,5/27/2026,under review
+Accenture,2059329,Khudoyelanskoye,9.6,7/15/2026,offer extended
+Amazon,1585905,Bhāi Pheru,9.2,4/25/2026,interview scheduled
+Samsung,988105,Seseng,7.6,1/12/2026,on hold
+Amazon,1071249,Semambung,5.5,4/6/2026,on hold
+JPMorgan,517406,Salmi,9.7,12/9/2026,withdrawn
+PhonePe,2210968,Blantyre,6.3,5/29/2026,interview scheduled
+Wipro,1820944,São Sebastião,5.4,11/29/2026,rejected
+JPMorgan,1269749,Vista Hermosa,7.2,3/23/2026,withdrawn
+Zoho,1477132,Santa Cruz de la Sierra,7.5,8/4/2026,under review
+Capgemini,1910259,Xinxing,8.3,12/6/2026,interview scheduled
+Morgan Stanley,1486595,Candi,7.2,1/3/2026,not selected
+Paytm,478195,Shalkar,8.8,12/23/2026,rejected
+Flipkart,1713744,Kalkal Barat,7.6,11/18/2026,offer extended
+Paytm,2754179,Borek Wielkopolski,5.7,6/16/2026,waiting for response
+Bosch,1992600,Harbin,8.3,3/10/2026,not selected
+SAP,2400702,Vancouver,6.4,6/15/2026,hired
+Google,2487426,Ocumare de la Costa,5.9,1/30/2026,withdrawn
+Microsoft,421137,Świecie nad Osą,9.1,8/2/2026,under review
+Flipkart,528071,Albuquerque,6.3,4/27/2026,not selected
+Morgan Stanley,2612806,Aitape,9.1,7/16/2026,interview scheduled
+Adobe,1317386,Argel,8.1,10/12/2026,withdrawn
+Cisco,821712,Malaruhatan,5.3,1/17/2026,pending
+Paytm,2496117,Concepcion,7.5,11/24/2026,offer extended
+Oracle,728235,Acopampa,5.6,7/7/2026,not selected
+SAP,1065444,Wentugaole,5.4,6/7/2026,on hold
+Nvidia,2245974,Paris 02,7.3,6/14/2026,on hold
+SAP,1873589,Daping,9.4,5/25/2026,waiting for response
+Amazon,526713,Pestovo,7.2,1/3/2026,withdrawn
+Zoho,2808489,Swift Current,8.0,10/10/2026,not selected
+Capgemini,1906301,Punta Cana,5.0,10/25/2026,interview scheduled
+JPMorgan,772700,Pompéu,8.0,5/21/2026,rejected
+SAP,704629,Chorente,8.6,7/9/2026,not selected
+Paytm,2365047,Cikadu,5.1,10/23/2026,pending
+Amazon,2709059,Kushima,6.4,2/26/2026,interview scheduled
+Dell,371069,Domampot,9.3,7/21/2026,interview scheduled
+Oracle,1143225,Milwaukee,8.6,11/25/2026,on hold
+Accenture,2381255,Boldumsaz,7.2,12/24/2026,not selected
+JPMorgan,1901984,Domanín,9.5,5/20/2026,interview scheduled
+Morgan Stanley,2813446,Livramento,9.0,11/19/2026,hired
+Bosch,2037096,Ntungamo,9.0,1/29/2026,interview scheduled
+Capgemini,1154301,Sepatan,7.8,3/2/2026,offer extended
+Capgemini,595747,Umm Şalāl ‘Alī,5.3,10/21/2026,rejected
+Microsoft,2294629,Barice,7.4,4/5/2026,waiting for response
+Accenture,1876354,Gejiu,7.7,7/24/2026,under review
+Paytm,1021065,Lyon,8.3,7/21/2026,interview scheduled
+Adobe,1352391,Yujiawu,6.8,3/10/2026,waiting for response
+Microsoft,2964774,Kaczory,7.1,9/9/2026,pending
+Goldman Sachs,1361646,Arthur’s Town,8.2,10/26/2026,hired
+Nvidia,416517,Mendes,10.0,4/8/2026,offer extended
+Accenture,2643691,Orlovat,5.4,6/29/2026,offer extended
+Flipkart,1027812,Aachen,7.5,4/15/2026,hired
+Goldman Sachs,1249557,Jinshan,7.4,6/11/2026,not selected
+Dell,2851537,Sintansin,7.6,10/19/2026,hired
+Zoho,2526152,Ust’-Izhora,9.7,1/11/2026,not selected
+Samsung,1947562,Nizhnepavlovka,9.4,5/8/2026,offer extended
+Microsoft,2982199,Malaga,5.5,11/8/2026,on hold
+Microsoft,1281467,Mauren,8.2,11/17/2026,under review
+Siemens,1764499,Nagcarlan,5.0,8/26/2026,pending
+Cisco,2921781,Sukogunungkrajan,8.4,3/31/2026,under review
+Siemens,2832615,Sukamaju,7.6,6/12/2026,pending
+SAP,866992,Jieshou,7.2,12/28/2026,hired
+Samsung,2112219,Caucaguita,5.4,7/16/2026,interview scheduled
+Samsung,1550812,Masinloc,6.5,2/19/2026,pending
+JPMorgan,843156,Camargo,7.1,1/2/2026,withdrawn
+Amazon,1021416,Bīr Nabālā,7.1,8/13/2026,not selected
+Infosys,861080,Jasugih Selatan,5.1,4/4/2026,hired
+Morgan Stanley,1971031,Pietermaritzburg,5.1,1/7/2026,offer extended
+Morgan Stanley,1817272,Lyon,9.8,7/18/2026,on hold
+Dell,2808514,Bolondrón,8.6,8/7/2026,rejected
+Zoho,1501133,Sremski Karlovci,7.5,7/24/2026,under review
+SAP,2351639,Balinad,6.3,12/30/2026,on hold
+Cisco,1758536,Hrochův Týnec,5.8,12/11/2026,offer extended
+Flipkart,2083579,Borås,8.6,8/22/2026,pending
+Adobe,511672,Dmitrov,7.4,7/20/2026,hired
+Accenture,2075810,Thatèng,8.0,11/29/2026,withdrawn
+Morgan Stanley,1829334,Seynod,9.2,8/31/2026,on hold
+Capgemini,2778863,Mollebamba,7.9,7/12/2026,waiting for response
+Flipkart,1198562,Louguan,7.6,3/9/2026,waiting for response
+Adobe,2002931,Kushnarënkovo,10.0,3/5/2026,hired
+Capgemini,2580142,Kariya,9.2,2/11/2026,pending
+Adobe,1604721,Phra Yuen,8.6,12/19/2026,waiting for response
+Microsoft,2371021,Mörrum,8.4,11/13/2026,withdrawn
+Intel,1817008,Hernando,9.2,9/25/2026,under review
+Intel,826212,Nungga,5.6,2/22/2026,on hold
+Samsung,1002880,Piedecuesta,7.9,10/6/2026,hired
+Google,2488484,Konza,6.9,7/30/2026,offer extended
+PhonePe,1776504,Cikupa,5.3,12/22/2026,not selected
+Samsung,488744,Cisewu,6.1,9/21/2026,rejected
+Amazon,830741,Bhadrapur,8.7,8/26/2026,withdrawn
+Nvidia,1931332,Rattanawapi,9.4,1/4/2026,not selected
+Adobe,1098422,Shidu,9.1,1/19/2026,rejected
+Morgan Stanley,2198113,Putang,9.5,2/8/2026,hired
+Zoho,705525,Huangni,7.1,11/25/2026,hired
+Capgemini,2966637,Bealanana,6.9,7/10/2026,not selected
+Paytm,624964,Espinal,7.4,11/12/2026,under review
+JPMorgan,2574127,Ambelón,10.0,7/4/2026,waiting for response
+Bosch,1965138,Agarsin,5.4,12/25/2026,pending
+Bosch,374232,Juazeiro do Norte,8.7,10/16/2026,not selected
+Accenture,1588997,T’ianet’i,5.9,10/15/2026,interview scheduled
+Siemens,2863484,Kōnosu,8.5,5/17/2026,under review
+Microsoft,980194,Magdalena,9.1,4/20/2026,rejected
+Intel,1093450,Wangda,9.8,7/20/2026,offer extended
+Infosys,924796,Xinjiezhen,7.8,4/25/2026,hired
+TCS,396556,Mulhouse,6.6,8/6/2026,not selected
+Microsoft,1675865,Panshi,7.2,2/17/2026,hired
+Capgemini,2527737,Nguru,7.8,10/20/2026,on hold
+Bosch,1366986,Szydłowo,8.3,10/12/2026,interview scheduled
+Wipro,900094,Maru,8.1,1/7/2026,pending
+Zoho,1937086,Waco,6.0,9/5/2026,pending
+Bosch,2802739,Xikou,10.0,10/9/2026,offer extended
+Wipro,1073093,Changqing,8.8,1/19/2026,hired
+Intel,1856140,Beirut,6.4,10/29/2026,withdrawn
+Amazon,775286,Oslo,8.7,11/3/2026,on hold
+Flipkart,2733841,Mường Nhé,7.4,11/29/2026,withdrawn
+Wipro,2814890,Port Louis,6.1,9/15/2026,waiting for response
+Paytm,1243238,Oyam,9.3,8/17/2026,offer extended
+Google,1144262,Yur’yevets,5.3,5/30/2026,under review
+Flipkart,2797483,Belköl,6.3,4/13/2026,offer extended
+TCS,419664,Papelón,6.7,7/18/2026,interview scheduled
+TCS,1478326,Cibeureum,7.5,5/7/2026,interview scheduled
+Microsoft,1121113,Gaopi,9.5,4/27/2026,not selected
+PhonePe,316137,Baiquesi,9.1,5/13/2026,pending
+Siemens,2805327,Santa Catalina,5.2,4/1/2026,on hold
+Morgan Stanley,2544726,Laugar,8.1,6/20/2026,hired
+TCS,922477,Ochojno,9.9,8/20/2026,on hold
+SAP,974002,Desa Wetan Ciakar,7.1,11/29/2026,hired
+PhonePe,343913,Vodnyy,7.4,5/9/2026,hired
+Goldman Sachs,2667153,Calvão,8.2,1/16/2026,under review
+Wipro,1219055,Skidal’,6.9,2/28/2026,hired
+Nvidia,2379160,Tagiura,6.9,1/22/2026,hired
+Intel,1672334,Waikambila,9.0,11/30/2026,withdrawn
+Amazon,1689694,Anak,7.1,3/4/2026,rejected
+Accenture,2882372,Gaosheng,7.5,6/4/2026,on hold
+Google,562821,Espinillo,8.1,12/30/2026,not selected
+PhonePe,1062179,Götene,9.8,6/2/2026,pending
+Nvidia,2849944,Calvos,8.6,10/12/2026,interview scheduled
+Capgemini,450904,Longping,6.6,1/26/2026,not selected
+PhonePe,1451486,Puyang,5.9,1/13/2026,pending
+Samsung,940953,Anna Regina,9.9,2/23/2026,not selected
+Cisco,1644898,Xibër-Murrizë,8.5,8/14/2026,on hold
+JPMorgan,1320387,Kamiichi,5.0,5/2/2026,under review
+Capgemini,2551550,Sokodé,10.0,11/12/2026,on hold
+JPMorgan,1880898,Nanxindian,7.8,11/2/2026,rejected
+JPMorgan,1554924,Louveira,9.5,4/5/2026,pending
+Morgan Stanley,402655,Bruxelles,9.1,6/20/2026,rejected
+Nvidia,1054938,Kolbano,6.2,6/3/2026,withdrawn
+Oracle,842427,Hadayang,5.3,10/5/2026,waiting for response
+JPMorgan,1816675,Mehrābpur,7.6,5/14/2026,not selected
+SAP,1324741,Bang Yai,9.5,9/21/2026,offer extended
+TCS,1946715,Maleevsk,9.0,6/23/2026,withdrawn
+Zoho,1093083,Morales,5.2,8/28/2026,on hold
+Samsung,2533932,Tvrdonice,6.3,10/19/2026,not selected
+Siemens,2602739,Moyynkum,9.8,7/30/2026,waiting for response
+Samsung,2964885,Housuo,8.8,5/31/2026,not selected
+Amazon,1261642,Longju,5.6,6/21/2026,on hold
+SAP,2099086,Baoli,9.7,8/18/2026,withdrawn
+Capgemini,1545917,Severskaya,8.4,2/28/2026,rejected
+Samsung,2426310,Birao,6.6,4/25/2026,offer extended
+SAP,718244,Parawan,6.4,9/22/2026,withdrawn
+JPMorgan,699224,San Isidro,6.7,5/31/2026,withdrawn
+Wipro,1254807,Maomiaoji,6.0,3/25/2026,hired
+SAP,2752037,Nanhai,5.9,6/1/2026,hired
+Microsoft,846363,Caçapava do Sul,8.7,1/26/2026,interview scheduled
+Zoho,1571911,Thị Trấn Mường Khến,9.0,12/1/2026,interview scheduled
+Infosys,1982108,Guadalupe,8.0,1/17/2026,hired
+Intel,1139996,Parang,6.9,4/8/2026,under review
+Nvidia,2897674,Kalapadua,6.1,1/19/2026,withdrawn
+Microsoft,758920,Torbat-e Jām,7.3,6/15/2026,under review
+TCS,2988043,Salto de Pirapora,7.7,7/24/2026,under review
+Zoho,2956363,Krumvíř,7.4,4/21/2026,offer extended
+Flipkart,2098329,Cherëmushki,8.4,11/6/2026,waiting for response
+Accenture,1101026,Karanganyar,7.6,7/8/2026,interview scheduled
+Flipkart,594915,Saiki,5.6,4/18/2026,withdrawn
+Cisco,1961318,Palmitas,9.1,4/25/2026,rejected
+Bosch,1868647,Cibulakan,6.3,7/18/2026,offer extended
+Zoho,2092088,Biao,7.1,7/28/2026,waiting for response
+Bosch,1253885,Sabangan,7.4,5/7/2026,offer extended
+Dell,2440183,Valado dos Frades,8.7,6/2/2026,withdrawn
+Zoho,2961997,Xinqiaohe,7.2,9/18/2026,waiting for response
+SAP,1896720,Tovačov,7.6,12/18/2026,interview scheduled
+Infosys,1099079,Psachná,5.4,6/14/2026,under review
+Wipro,2953322,Copa,5.8,9/5/2026,withdrawn
+Oracle,484561,Xiasi,5.9,10/23/2026,interview scheduled
+Amazon,1004845,Lancaster,7.7,6/5/2026,rejected
+Paytm,1798699,Shāhīn Dezh,9.3,12/29/2026,on hold
+Adobe,607609,Kholbon,8.6,4/16/2026,withdrawn
+Goldman Sachs,955587,Kamyzyak,6.6,1/26/2026,pending
+Capgemini,1794631,Ondores,8.7,3/26/2026,waiting for response
+PhonePe,724468,Gal’bshtadt,9.0,9/7/2026,hired
+Accenture,1146885,Shaheying,6.0,10/20/2026,pending
+SAP,713184,Shuigou,9.2,4/2/2026,offer extended
+TCS,2371863,Lantang,8.4,11/25/2026,hired
+Nvidia,2166451,Banjar Taro Kelod,9.8,11/21/2026,interview scheduled
+Dell,434456,Tawau,7.8,2/18/2026,on hold
+Siemens,451991,Al Karmil,5.4,3/13/2026,interview scheduled
+Amazon,2764888,Leping,8.6,12/27/2026,hired
+PhonePe,1908507,Geoktschai,7.2,2/23/2026,interview scheduled
+Amazon,385334,Nagutskoye,5.9,6/26/2026,pending
+Siemens,1894395,Sukamaju,6.4,6/29/2026,rejected
+Morgan Stanley,316552,Brinje,9.2,2/25/2026,pending
+Wipro,347401,Solna,9.6,6/29/2026,hired
+Microsoft,777924,Liberia,6.6,3/17/2026,interview scheduled
+Cisco,763554,Bijeli,8.5,1/10/2026,pending
+Samsung,1326433,Longzhong,6.4,7/6/2026,pending
+Zoho,1073717,Koatas Lao,6.5,3/23/2026,hired
+Dell,1219218,Nong Khai,9.9,12/22/2026,withdrawn
+Bosch,1031681,San Eugenio,6.5,8/21/2026,hired
+Samsung,910061,Kristianstad,5.8,5/16/2026,withdrawn
+Siemens,1538351,Bridgewater,9.2,8/30/2026,offer extended
+Cisco,2232052,Jalupang Dua,6.6,12/10/2026,hired
+Accenture,2609818,An Naşr,8.4,12/4/2026,pending
+Paytm,1307756,Brzeg Dolny,8.0,5/16/2026,waiting for response
+Paytm,1250495,La Fortuna,6.8,9/8/2026,hired
+Microsoft,2196809,Masuda,6.0,8/6/2026,waiting for response
+Flipkart,2128931,Araulí,9.7,11/11/2026,interview scheduled
+Flipkart,1794686,Jarash,7.9,4/20/2026,not selected
+Adobe,868462,Lecheng,6.5,4/4/2026,withdrawn
+Morgan Stanley,1075421,Cho-airong,7.7,11/28/2026,interview scheduled
+Flipkart,1218624,Sanzhou,6.9,5/18/2026,interview scheduled
+Intel,2945403,Novaya Derevnya,6.2,2/19/2026,rejected
+Samsung,1167789,Castelo,7.1,10/28/2026,under review
+Morgan Stanley,2747956,Conima,8.2,7/12/2026,under review
+Bosch,1497472,Taosha,7.9,2/11/2026,interview scheduled
+Morgan Stanley,2521894,Iguig,5.8,6/2/2026,hired
+Intel,1144949,Dŭstí,9.6,7/12/2026,waiting for response
+Infosys,1047988,Lianglin,7.8,12/15/2026,rejected
+Wipro,2869555,Kostino,9.9,2/28/2026,on hold
+Goldman Sachs,2748120,Songshan,8.3,4/18/2026,rejected
+TCS,2615080,Susoh,9.7,11/12/2026,pending
+Microsoft,2136687,Cachoeirinha,8.5,8/28/2026,waiting for response
+Dell,2507518,Jabranti,6.9,3/15/2026,withdrawn
+Oracle,1121697,Jovellanos,5.8,6/29/2026,offer extended
+TCS,323066,Bhola,8.3,8/26/2026,on hold
+Dell,812435,Água Retorta,9.4,6/3/2026,rejected
+Flipkart,689940,São Vicente,8.4,3/31/2026,waiting for response
+JPMorgan,1868549,Nueva Cajamarca,6.3,5/13/2026,on hold
+Cisco,1625555,Cizhu,9.4,10/8/2026,on hold
+Accenture,1496696,Taywanak Ilaya,6.5,6/3/2026,on hold
+JPMorgan,2640726,Girihieum,7.3,7/3/2026,waiting for response
+Oracle,2138727,Villa Paula de Sarmiento,6.2,5/4/2026,not selected
+Zoho,1973420,Krajan Timur Mlokorejo,5.4,4/4/2026,under review
+Goldman Sachs,2151423,Sergelen,5.5,9/12/2026,hired
+Bosch,1478830,Wedoro,6.4,12/16/2026,offer extended
+Samsung,1776489,Göteborg,8.2,12/20/2026,hired
+Morgan Stanley,1033717,Wrząsowice,8.6,11/13/2026,not selected
+Infosys,576565,Verkhnyaya Belka,9.2,1/4/2026,rejected
+Nvidia,1360822,Xiachen,8.6,1/7/2026,interview scheduled
+Samsung,1618738,Norcasia,5.0,1/8/2026,on hold
+Nvidia,2666603,Anuling,8.3,11/2/2026,waiting for response
+Cisco,2995181,Corpus Christi,9.4,8/27/2026,rejected
+Zoho,2178793,Náousa,6.6,12/26/2026,interview scheduled
+Accenture,1692621,Mūsá Qal‘ah,8.5,5/21/2026,on hold
+Accenture,2189833,Željezno Polje,5.2,9/18/2026,not selected
+TCS,874364,Lengshuitan,5.8,2/13/2026,rejected
+Accenture,2936380,Panjiang,7.7,9/15/2026,under review
+Dell,2430122,Martingança-Gare,7.1,2/9/2026,not selected
+Capgemini,2871424,Kosan,8.0,12/15/2026,rejected
+Morgan Stanley,336140,Qızılhacılı,9.9,8/17/2026,on hold
+Dell,1503101,Musan-ŭp,8.8,8/30/2026,waiting for response
+Cisco,1846328,Yangtan,9.4,6/1/2026,interview scheduled
+Siemens,1926728,Maun,6.6,6/15/2026,rejected
+JPMorgan,2520801,Skotoússa,8.8,9/16/2026,on hold
+Dell,1693499,Kramators’k,9.8,4/17/2026,interview scheduled
+Amazon,1078839,Nīca,5.0,6/1/2026,on hold
+Adobe,1819764,Ndewel,6.9,9/26/2026,pending
+Wipro,1685673,Łopuszna,6.7,1/21/2026,withdrawn
+Microsoft,476592,Kupusina,9.8,6/3/2026,offer extended
+Accenture,899553,Eskilstuna,9.9,8/24/2026,rejected
+Bosch,515316,Baraya,7.9,6/6/2026,rejected
+Nvidia,2362652,Xiaruyue,9.2,3/2/2026,on hold
+Nvidia,1835820,Coromoro,6.7,3/26/2026,waiting for response
+Nvidia,2392864,Gongping,5.2,8/11/2026,rejected
+Zoho,2267723,Blimbing,9.9,11/12/2026,rejected
+Flipkart,890235,Xiamazhuang,7.9,7/23/2026,rejected
+Amazon,1555844,Hongqi,9.6,11/8/2026,rejected
+Nvidia,618312,Riachos,7.5,5/15/2026,hired
+Goldman Sachs,1762146,Tallkalakh,8.8,4/4/2026,not selected
+Zoho,1656536,Duishan,8.5,4/18/2026,on hold
+Flipkart,1833453,Solkan,5.6,12/26/2026,withdrawn
+Wipro,2141962,Cajabamba,9.9,6/2/2026,on hold
+Zoho,1662414,Henggang,8.4,6/19/2026,not selected
+Flipkart,1370875,Iwkowa,5.2,7/29/2026,withdrawn
+Flipkart,626489,Adelaide,7.4,12/10/2026,rejected
+Intel,1093210,Saint-Grégoire,9.7,8/3/2026,interview scheduled
+Wipro,2386682,Carnot,7.4,3/21/2026,on hold
+Samsung,1108358,Atlanta,6.1,9/7/2026,rejected
+Amazon,2227714,Pasuruan,9.7,10/8/2026,not selected
+Capgemini,367345,Korenovsk,9.4,12/5/2026,on hold
+PhonePe,2201569,Storozhnytsya,9.9,7/8/2026,pending
+Accenture,719504,Korkino,8.3,11/15/2026,pending
+Adobe,667192,Huipinggeng,8.3,6/6/2026,rejected
+Samsung,1231505,Saint-Louis,8.4,6/29/2026,hired
+Capgemini,367602,Bucu Kidul,6.5,4/29/2026,not selected
+Oracle,1260919,Tomakomai,6.5,10/3/2026,hired
+Zoho,2059207,Mabini,9.8,4/19/2026,offer extended
+Adobe,2908016,Jiuxian,6.1,4/7/2026,under review
+Paytm,2834348,Brejoeira,7.7,4/10/2026,withdrawn
+Flipkart,1817353,Jakhaly,8.7,2/26/2026,offer extended
+Paytm,463535,Brea Pozo,7.4,3/23/2026,hired
+TCS,2774005,Luoping,6.8,9/6/2026,on hold
+Goldman Sachs,1253882,Sapataria,9.6,7/15/2026,waiting for response
+Siemens,2598270,Sena Madureira,9.5,3/29/2026,interview scheduled
+PhonePe,2656697,Al Bawīţī,5.4,3/14/2026,hired
+PhonePe,2452239,Sundbyberg,7.1,1/14/2026,waiting for response
+Microsoft,1187746,Vancouver,5.2,2/17/2026,pending
+Intel,2809402,Ludza,6.2,7/27/2026,waiting for response
+Dell,2731278,Ankou,5.3,8/11/2026,under review
+Dell,1434805,Compiègne,5.3,8/1/2026,offer extended
+Cisco,1371071,Tapel,5.4,9/9/2026,under review
+Capgemini,605064,Sollefteå,9.5,4/7/2026,hired
+Zoho,501636,Manado,8.6,11/3/2026,on hold
+TCS,306204,Alingsås,7.7,7/16/2026,hired
+Adobe,670649,Kezileboyi,9.5,9/7/2026,pending
+Google,1463039,London,7.0,6/20/2026,not selected
+Infosys,1496929,El Sombrero,7.2,1/2/2026,on hold
+Wipro,1587206,Fada,7.5,5/19/2026,rejected
+Google,2255727,Dongxi,8.9,7/14/2026,under review
+Flipkart,1103091,Lundo,9.1,11/18/2026,on hold
+Adobe,1292847,Viļaka,7.2,5/19/2026,withdrawn
+Goldman Sachs,1671787,Polepy,9.3,3/21/2026,under review
+Flipkart,1592649,Tyachiv,7.2,1/31/2026,not selected
+Wipro,828735,Lapas,8.7,1/8/2026,pending
+Flipkart,2144459,Singgit,6.0,6/20/2026,offer extended
+Amazon,1260966,Itacarambi,7.8,12/26/2026,interview scheduled
+Infosys,1746365,Mingyue,7.6,1/29/2026,pending
+Siemens,2089616,Xiangcheng,7.6,1/4/2026,pending
+Goldman Sachs,1935430,Huoshaoping,8.8,11/4/2026,waiting for response
+Cisco,610013,Bailadores,8.9,2/21/2026,withdrawn
+Nvidia,343123,Florida,9.3,7/3/2026,rejected
+TCS,1668151,Aco,5.2,1/21/2026,withdrawn
+Microsoft,1402207,Santa Cruz,5.4,9/12/2026,rejected
+Wipro,935519,Stanley,6.2,7/21/2026,hired
+Google,1102091,Tongmuluo,8.2,11/27/2026,not selected
+Siemens,2001211,Pedra Branca,7.1,12/25/2026,not selected
+JPMorgan,828911,Huajlaya,9.4,2/11/2026,under review
+Samsung,760268,San Isidro,5.2,12/29/2026,on hold
+Infosys,1384298,Almaguer North,10.0,10/12/2026,not selected
+SAP,1035901,Teno,5.1,5/14/2026,under review
+JPMorgan,2958113,Shuixi,5.4,7/18/2026,waiting for response
+Capgemini,1691545,Ibiá,6.6,3/5/2026,hired
+TCS,2392750,Touguinha,7.4,6/25/2026,hired
+TCS,2833979,Kyzylorda,9.7,12/5/2026,not selected
+Accenture,1429468,Yong’an,6.9,8/18/2026,waiting for response
+Morgan Stanley,1282348,Chinú,9.4,8/15/2026,pending
+Infosys,330377,Lojigawaran,8.6,8/30/2026,withdrawn
+Flipkart,2612426,Conqueiros,6.6,7/28/2026,rejected
+Wipro,2341606,Trai Ngau,5.0,7/22/2026,waiting for response
+Paytm,2893955,Mathba,8.3,5/4/2026,under review
+SAP,2794976,Juradó,7.6,4/26/2026,interview scheduled
+Accenture,910313,Ershilipu,6.1,1/29/2026,pending
+Flipkart,1863444,Arenas,7.2,7/16/2026,pending
+Flipkart,1567256,Nizhniy Tsasuchey,7.5,4/24/2026,withdrawn
+Zoho,805999,Yangzhen,5.0,2/7/2026,pending
+Accenture,760336,Catac,8.5,2/4/2026,waiting for response
+Morgan Stanley,1776730,A Yun Pa,5.6,7/13/2026,waiting for response
+JPMorgan,1979414,Karangwaru,6.0,5/19/2026,on hold
+Nvidia,1918097,Xirikxiy,9.1,4/20/2026,waiting for response
+Infosys,2076373,Stockholm,8.7,8/31/2026,waiting for response
+Intel,945943,Turka,6.1,12/12/2026,hired
+Accenture,2659128,Bangil,7.4,10/27/2026,pending
+Adobe,1025561,Emiliano Zapata,7.8,5/11/2026,withdrawn
+Wipro,1050794,Garwolin,9.5,4/11/2026,pending
+Flipkart,1932914,Panshi,7.2,11/30/2026,on hold
+Morgan Stanley,523792,Urazovo,7.7,6/11/2026,interview scheduled
+Goldman Sachs,1698641,Chernomorets,8.1,7/4/2026,on hold
+Capgemini,2585555,Chutove,6.7,3/20/2026,not selected
+Morgan Stanley,2452844,Sv. Trojica v Slov. Goricah,7.1,11/21/2026,offer extended
+Goldman Sachs,2848432,Yashiga,8.1,6/19/2026,pending
+JPMorgan,1914776,Magaozhuang,7.3,10/22/2026,interview scheduled
+Flipkart,2896028,Verba,6.4,10/3/2026,rejected
+Dell,2067517,Altay,7.8,1/3/2026,interview scheduled
+SAP,420722,Kamiiso,8.1,10/18/2026,pending
+SAP,1506090,Tyresö,6.5,5/26/2026,waiting for response
+Cisco,460784,Ivanovskoye,8.7,6/17/2026,not selected
+TCS,2344017,Nal’chik,5.9,7/3/2026,withdrawn
+Intel,343489,Xinhe,8.2,3/28/2026,waiting for response
+Amazon,2106819,Chengjiao,8.7,6/5/2026,on hold
+Infosys,2206648,Póvoa,9.4,6/5/2026,withdrawn
+Wipro,786602,Quintas,6.5,6/27/2026,hired
+JPMorgan,1087440,Bolorejo,9.4,11/17/2026,withdrawn
+Paytm,557354,Sinait,6.2,12/22/2026,pending
+Cisco,1278381,Liulin,7.8,2/4/2026,waiting for response
+Oracle,2499234,Verkhniy Baskunchak,5.1,5/15/2026,rejected
+Amazon,2232694,Ueno,6.5,7/26/2026,on hold
+Goldman Sachs,1353626,Youwarou,9.2,12/11/2026,rejected
+Adobe,1423469,Santo Amaro,8.9,9/24/2026,interview scheduled
+TCS,984429,Tegina,8.4,3/13/2026,rejected
+Wipro,307969,Santa Lucía,6.0,11/11/2026,under review
+Siemens,2239212,Yarabamba,8.5,6/1/2026,rejected
+Adobe,2275461,Corumbá,8.3,9/9/2026,pending
+Google,2851558,Damasak,10.0,4/12/2026,rejected
+TCS,2136399,Pushkin,9.7,9/20/2026,interview scheduled
+Accenture,1805665,Burujul,6.7,6/14/2026,under review
+TCS,2234624,Kushiro,7.8,4/20/2026,pending
+Siemens,2708233,Limulan,7.3,12/13/2026,not selected
+Google,1193133,Shangma,8.0,10/29/2026,pending
+Goldman Sachs,726215,Zhongzhang,9.0,10/9/2026,interview scheduled
+Goldman Sachs,408382,Marttila,6.8,2/10/2026,waiting for response
+Zoho,968425,Daijiaba,7.3,12/8/2026,interview scheduled
+Dell,1987962,Tiebiancheng,7.1,1/14/2026,not selected
+Goldman Sachs,2672721,Cergy-Pontoise,5.9,10/8/2026,under review
+Wipro,1701764,Registro,7.7,10/1/2026,rejected
+Accenture,2393444,Pallisa,9.5,8/17/2026,pending
+Goldman Sachs,1468185,Santo Antônio do Monte,9.6,1/31/2026,on hold
+Capgemini,2410970,Néa Ankhíalos,6.9,7/17/2026,pending
+Paytm,2853067,Lubochnia,9.4,10/22/2026,rejected
+Cisco,810753,Makata,7.3,9/18/2026,waiting for response
+Bosch,395450,Greensboro,9.1,2/28/2026,interview scheduled
+Nvidia,1544011,Yimnón,6.2,11/5/2026,pending
+Samsung,2464731,Chacapalpa,7.7,10/24/2026,on hold
+TCS,2641814,Mandal,6.3,12/13/2026,hired
+Nvidia,2562825,Nangerang,9.3,10/17/2026,interview scheduled
+Infosys,1699066,Qizhen,5.6,7/28/2026,interview scheduled
+Cisco,1479120,Punggurharjo,8.2,8/8/2026,rejected
+Accenture,2465367,Nanjin,9.7,3/15/2026,hired
+Dell,2445548,Kazan,9.6,9/9/2026,pending
+Infosys,2335869,Kolochava,8.0,2/12/2026,on hold
+Nvidia,2973326,Khon San,8.5,6/23/2026,rejected
+Capgemini,2266415,Linan,9.5,10/27/2026,waiting for response
+Dell,2684345,Táriba,7.7,5/19/2026,withdrawn
+PhonePe,1183583,Stanley,8.0,4/20/2026,offer extended
+TCS,438488,Berlin,8.1,6/11/2026,interview scheduled
+Amazon,2387350,Zhaike,5.9,12/15/2026,rejected
+Flipkart,555835,Atikokan,7.2,8/29/2026,withdrawn
+Paytm,759448,Heishui,5.9,1/5/2026,waiting for response
+Accenture,1805853,Trondheim,7.1,10/9/2026,withdrawn
+Dell,547425,Mokolo,5.8,7/25/2026,waiting for response
+TCS,1272508,Ikey,5.2,10/9/2026,hired
+Intel,1966382,Bailieborough,9.0,5/9/2026,withdrawn
+Nvidia,2839238,Bo Kluea,7.1,11/11/2026,offer extended
+Zoho,1443531,Miches,7.9,5/6/2026,rejected
+SAP,734076,Maradi,8.6,11/1/2026,rejected
+Accenture,739293,Wan’an,5.2,7/9/2026,waiting for response
+Infosys,2924676,Shawnee Mission,9.6,6/30/2026,on hold
+Capgemini,475153,Hulutao,9.1,11/9/2026,waiting for response
+Accenture,2278889,Bojong,8.6,6/6/2026,pending
+Dell,2387026,Sainte-Anne-des-Plaines,8.1,2/24/2026,withdrawn
+Accenture,1861261,Uliastay,6.1,8/30/2026,under review
+Zoho,1935502,Komsomol’s’ke,7.2,4/9/2026,not selected
+Flipkart,1325847,Tashang,5.6,2/11/2026,offer extended
+Samsung,2628616,Iúna,6.2,5/12/2026,not selected
+Dell,2375553,Korkino,9.8,2/23/2026,waiting for response
+SAP,304750,Catriel,9.1,2/16/2026,offer extended
+Cisco,1016060,Imeni Tsyurupy,8.3,7/25/2026,not selected
+Cisco,1562406,Sebulu,7.4,12/9/2026,rejected
+Nvidia,780073,Cañaveral,8.3,8/31/2026,offer extended
+Cisco,707695,San Calixto,6.3,4/12/2026,waiting for response
+Flipkart,2505986,Skulsk,5.5,3/22/2026,offer extended
+Bosch,1060686,Tha Tako,5.9,2/20/2026,pending
+Dell,339677,Calatrava,8.7,10/5/2026,offer extended
+TCS,711349,Bahía Honda,6.5,3/10/2026,pending
+Capgemini,2093882,Tonoshō,9.2,9/4/2026,rejected
+Morgan Stanley,2766635,Dologon,9.6,7/28/2026,withdrawn
+Flipkart,566990,Balauring,9.7,2/22/2026,on hold
+Amazon,2774084,Kallithéa,5.8,10/29/2026,interview scheduled
+Oracle,2084458,Naka,5.3,5/5/2026,hired
+SAP,1749408,Xiashuitou,7.1,5/24/2026,under review
+JPMorgan,496263,Monching,8.7,8/19/2026,interview scheduled
+Flipkart,2585051,Kuniran,8.4,2/8/2026,on hold
+Morgan Stanley,390004,Pittsburgh,6.4,2/22/2026,on hold
+Google,2514443,‘Aqrah,6.3,9/22/2026,under review
+Google,2262717,Palmira,9.6,2/8/2026,interview scheduled
+Infosys,2642981,Loum,8.9,4/12/2026,offer extended
+Samsung,823794,Busalangga,7.6,1/20/2026,interview scheduled
+Flipkart,1729130,Igoumenítsa,5.4,6/15/2026,on hold
+Siemens,489367,Tual,6.9,1/9/2026,withdrawn
+Microsoft,1076970,Jati,7.6,9/17/2026,withdrawn
+TCS,2171895,Nairobi,7.8,7/11/2026,on hold
+Oracle,2352699,Klatakan,8.1,2/16/2026,waiting for response
+Wipro,1752921,Steinkjer,9.4,11/24/2026,under review
+Flipkart,2324544,Wonoharjo,8.6,1/19/2026,withdrawn
+SAP,2510734,Montalvão,6.3,3/26/2026,withdrawn
+Flipkart,2253613,Urungpigang,9.3,8/16/2026,rejected
+Oracle,1633259,Berlin,6.2,1/18/2026,interview scheduled
+Capgemini,2386018,Firenze,9.5,10/2/2026,offer extended
+TCS,346190,Báguanos,6.7,3/13/2026,under review
+Intel,1164670,Kribi,9.9,1/11/2026,pending
+Dell,960773,Saint Hubert,6.7,5/24/2026,pending
+Accenture,905024,Älvdalen,5.8,2/26/2026,withdrawn
+Intel,1852139,Xianshui,8.8,7/6/2026,on hold
+Siemens,2826411,Bërxull,6.0,8/2/2026,hired
+PhonePe,541220,Bulembu,7.3,6/17/2026,withdrawn
+Cisco,1433952,La Sebala du Mornag,6.4,6/25/2026,waiting for response
+Goldman Sachs,586931,Xiaoduchuan,7.6,8/24/2026,under review
+JPMorgan,2063514,Sufang,6.8,6/14/2026,on hold
+Goldman Sachs,1080284,Buenos Aires,7.3,5/17/2026,hired
+Bosch,2331856,Zhigulevsk,7.4,1/19/2026,under review
+Wipro,2989880,Semënovskoye,9.4,1/25/2026,not selected
+TCS,2480055,Sūrīān,6.6,3/29/2026,under review
+Bosch,1535259,Kandana,7.4,3/7/2026,not selected
+Nvidia,502533,Jiahe,9.1,6/4/2026,on hold
+Dell,1855508,Suzano,7.3,1/3/2026,under review
+SAP,1397634,Ústí nad Orlicí,9.0,4/11/2026,under review
+Microsoft,651005,Merkezköy,5.9,3/3/2026,hired
+Dell,1534590,Lyon,7.9,8/7/2026,rejected
+Siemens,1539760,Yanling,7.7,11/13/2026,not selected
+Wipro,1025974,Muaratiga,9.1,10/3/2026,under review
+Amazon,2808517,Sandu,8.2,3/7/2026,withdrawn
+Oracle,336843,Mithi,7.2,10/4/2026,interview scheduled
+Paytm,2178117,Tofol,8.6,12/17/2026,waiting for response
+Goldman Sachs,2080865,Orlu,9.9,12/7/2026,under review
+Cisco,2684744,Shangchewan,9.7,10/17/2026,on hold
+JPMorgan,2637072,Heshe,5.3,6/8/2026,pending
+Siemens,2777152,Palmerston North,6.0,4/27/2026,pending
+Adobe,310974,Huallanca,6.6,9/4/2026,rejected
+Oracle,685285,Carnaxide,7.1,2/12/2026,under review
+Zoho,942021,Kalianda,6.1,12/28/2026,not selected
+SAP,2979856,Yangqiaodian,5.7,2/28/2026,rejected
+Siemens,1399228,Italó,9.3,11/9/2026,offer extended
+Paytm,2085096,Jiaozhou,6.4,10/24/2026,on hold
+Samsung,1293405,Kola,9.9,1/14/2026,waiting for response
+Adobe,1912976,Vose’,7.0,10/13/2026,waiting for response
+Capgemini,1512210,Hüremt,7.2,12/19/2026,not selected
+Dell,1352099,Perehonivka,8.3,1/29/2026,on hold
+Oracle,385084,Pysznica,5.9,2/10/2026,pending
+Capgemini,1235415,Besançon,6.0,12/17/2026,hired
+Zoho,1159780,Jixian,5.6,6/9/2026,withdrawn
+Intel,1138451,Dhromolaxia,10.0,1/18/2026,under review
+Paytm,1014277,Marcara,7.9,10/13/2026,offer extended
+Bosch,1739987,Naqadeh,10.0,3/26/2026,on hold
+Morgan Stanley,310992,Tamansari,7.0,10/20/2026,on hold
+Intel,1500909,Kangshan,5.2,8/4/2026,withdrawn
+PhonePe,1132163,Espinal,6.3,1/20/2026,interview scheduled
+Accenture,1335553,Nankai,9.4,5/3/2026,withdrawn
+PhonePe,2623807,Dalu,8.1,11/1/2026,offer extended
+Siemens,1418270,Tongguan,7.3,11/4/2026,not selected
+Cisco,1853882,Pumaqangtang,7.0,3/13/2026,hired
+SAP,322584,Fenghuang,9.5,4/14/2026,interview scheduled
+TCS,1526498,Chilmāri,8.4,8/25/2026,interview scheduled
+Amazon,610220,Denver,7.4,8/2/2026,under review
+Capgemini,1838575,Neftobod,8.5,5/13/2026,interview scheduled
+Microsoft,436618,Thung Song,7.8,10/17/2026,under review
+Oracle,2993614,Sceaux,8.2,4/15/2026,pending
+Samsung,1438730,Bueng Kum,8.5,2/10/2026,rejected
+Cisco,2442729,Vale Covo,5.6,7/12/2026,waiting for response
+Goldman Sachs,2104526,Bohicon,6.7,1/16/2026,waiting for response
+Cisco,1572707,Kafr Mandā,7.3,5/2/2026,under review
+Accenture,347105,Laiguangying,5.0,1/5/2026,pending
+Amazon,1425095,Guanshan,5.5,5/5/2026,waiting for response
+Microsoft,463950,Stockton,5.7,2/13/2026,not selected
+Dell,419781,Jincheng,6.2,6/7/2026,rejected
+Morgan Stanley,914067,Ganchazi,7.3,6/18/2026,withdrawn
+Nvidia,926034,El Rancho,6.4,4/24/2026,rejected
+Samsung,1219346,Orléans,5.1,3/28/2026,pending
+Morgan Stanley,1459613,Orizari,9.2,11/25/2026,waiting for response
+Goldman Sachs,2282920,Pinhal General,7.6,6/11/2026,under review
+Intel,1127172,Colonia Neuland,7.8,4/21/2026,interview scheduled
+Microsoft,816658,Delães,5.6,2/16/2026,pending
+Microsoft,2581399,Bingfang,7.2,11/10/2026,withdrawn
+Wipro,2785433,Mutangyuan,9.2,9/2/2026,waiting for response
+Oracle,2934015,Vinica,9.2,12/23/2026,not selected
+Zoho,1517865,Callanca,8.2,11/26/2026,interview scheduled
+Microsoft,1094063,Tsul-Ulaan,7.2,2/5/2026,offer extended
+JPMorgan,829296,Danao,6.3,9/23/2026,pending
+Cisco,595539,Dolní Černilov,9.8,10/9/2026,interview scheduled
+PhonePe,1373532,Gaoqiaolou,6.8,11/3/2026,rejected
+Intel,2270100,Strasbourg,6.5,12/4/2026,under review
+Microsoft,2382521,Umm as Sāhik,8.8,4/1/2026,hired
+Oracle,1670999,Memphis,8.4,12/22/2026,offer extended
+Goldman Sachs,1418362,Pajapita,5.6,2/12/2026,rejected
+Intel,510849,Tall Rif‘at,9.7,5/8/2026,withdrawn
+Capgemini,2530270,Znomenka,7.5,3/25/2026,hired
+Microsoft,478499,Pruzhany,6.1,8/31/2026,interview scheduled
+TCS,2051078,Wola Rębkowska,5.1,11/28/2026,under review
+JPMorgan,612523,Duczki,7.5,7/20/2026,on hold
+Infosys,495464,Purong,5.8,12/20/2026,withdrawn
+Amazon,648393,Tumpukrenteng,7.9,6/4/2026,on hold
+Bosch,2735732,Dolní Libina,9.3,1/27/2026,rejected
+SAP,2086061,Douentza,5.8,4/14/2026,waiting for response
+Intel,579105,Nazaré,6.3,6/19/2026,hired
+PhonePe,1800601,Huai’an,5.2,10/18/2026,under review
+Flipkart,1486797,Ipatinga,6.4,12/2/2026,waiting for response
+JPMorgan,911828,Ihosy,6.3,7/12/2026,withdrawn
+Amazon,353620,Beiping,7.1,4/22/2026,not selected
+Microsoft,557592,Markowa,6.8,5/12/2026,not selected
+Morgan Stanley,303059,Monte Novo,7.4,1/27/2026,offer extended
+Dell,1271652,Lascano,7.4,3/19/2026,not selected
+Microsoft,1810466,Gexi,6.2,5/1/2026,waiting for response
+Flipkart,600507,Ciro Redondo,6.3,3/15/2026,pending
+Siemens,2046157,Yuannan,9.1,2/11/2026,waiting for response
+PhonePe,2663799,Rengasdengklok,6.5,8/11/2026,waiting for response
+Oracle,1624743,Rajsko,8.3,1/31/2026,on hold
+Paytm,1365003,Shuangqiao,9.1,2/15/2026,offer extended
+Nvidia,1155891,Penhold,5.9,7/12/2026,pending
+Microsoft,2781613,Wenwuba,8.2,3/12/2026,rejected
+SAP,1894551,Runka,6.5,4/13/2026,withdrawn
+Siemens,393451,Sibay,6.7,7/6/2026,interview scheduled
+Amazon,2058569,Alor Setar,8.0,11/18/2026,hired
+Samsung,1450041,Muraloka,7.9,8/31/2026,under review
+Siemens,1829496,Koga,9.5,8/12/2026,interview scheduled
+Dell,1497396,Stockholm,9.6,10/28/2026,hired
+PhonePe,2730232,Yantianhe,9.7,4/2/2026,waiting for response
+Wipro,1294955,Camingawan,9.3,6/13/2026,under review
+Capgemini,1261370,Numata,5.6,11/8/2026,not selected
+JPMorgan,318097,Xinglong,6.5,3/31/2026,rejected
+Bosch,2852728,Paka,9.0,5/15/2026,not selected
+Morgan Stanley,1145465,Caqu,8.1,6/14/2026,pending
+Accenture,946321,Panino,7.8,7/15/2026,under review
+Google,1126188,Nacala,8.0,2/12/2026,withdrawn
+JPMorgan,1179027,Zastávka,8.5,4/28/2026,not selected
+Capgemini,472813,Tumpakkepuh,9.3,3/15/2026,under review
+Amazon,1037204,Mangaran,8.0,12/28/2026,not selected
+Adobe,2280096,Le Havre,7.7,12/23/2026,on hold
+Nvidia,1286249,Patos,6.9,6/25/2026,hired
+Goldman Sachs,2897193,Cikalang,5.1,8/21/2026,offer extended
+Google,1479124,Straldzha,6.1,1/17/2026,withdrawn
+Accenture,1693825,Antwerpen,6.4,2/12/2026,hired
+Siemens,1948439,Fuying,5.4,5/30/2026,interview scheduled
+Accenture,916700,Zwedru,7.4,10/23/2026,on hold
+Paytm,2041951,Mitsuke,9.1,11/21/2026,under review
+Amazon,2555701,Kostino,5.9,7/2/2026,interview scheduled
+Amazon,863706,Elaiochóri,5.2,11/24/2026,withdrawn
+SAP,2557052,Stetseva,6.6,12/6/2026,under review
+Morgan Stanley,2143041,Río,6.1,2/7/2026,withdrawn
+Wipro,1997556,Nishio,5.3,9/2/2026,pending
+Accenture,536086,Palkovice,5.9,2/8/2026,waiting for response
+JPMorgan,1833243,Novoanninskiy,8.5,2/22/2026,offer extended
+Infosys,715495,Muzambinho,8.0,10/20/2026,pending
+Microsoft,1231691,Unquillo,9.5,6/6/2026,pending
+SAP,667486,Tolstoy-Yurt,7.8,5/9/2026,under review
+Oracle,771558,Sanjia,5.7,1/16/2026,interview scheduled
+Intel,1864240,Saltsjöbaden,6.4,6/7/2026,on hold
+Infosys,2814221,Arcos,6.4,3/24/2026,not selected
+Nvidia,1882260,Argotirto Krajan,6.1,8/11/2026,on hold
+Adobe,2996543,Jilili,8.7,9/6/2026,withdrawn
+Microsoft,2390697,Zhongguan,5.7,8/24/2026,waiting for response
+Dell,1141097,Galle,6.7,4/28/2026,rejected
+Flipkart,2441352,Komono,6.4,6/16/2026,interview scheduled
+PhonePe,1002224,Nakhabino,9.0,2/27/2026,rejected
+Microsoft,373670,Taixi,5.7,7/1/2026,on hold
+Morgan Stanley,2001824,Asia,9.9,7/13/2026,rejected
+Flipkart,2242705,Tolosa,6.8,10/23/2026,on hold
+Samsung,1007477,Viñales,6.5,11/13/2026,hired
+Dell,2711752,Larnaca,9.1,4/26/2026,waiting for response
+Infosys,1105177,Neftekamsk,6.1,5/14/2026,withdrawn
+Wipro,2631188,Huajie,8.9,10/21/2026,rejected
+Oracle,2315118,Grijó,6.7,4/2/2026,interview scheduled
+Infosys,817787,Guli,7.5,5/29/2026,pending
+Goldman Sachs,737892,Qingxi,9.9,5/7/2026,pending
+Wipro,2407956,Santo Niño,5.0,3/13/2026,waiting for response
+Cisco,757311,Huaidian,7.8,7/1/2026,interview scheduled
+Accenture,1708651,Viñales,7.6,10/16/2026,hired
+Oracle,2975662,Libei,9.7,6/18/2026,withdrawn
+Infosys,1788118,Perdões,9.0,7/22/2026,not selected
+Siemens,2556977,Zadní Mostek,7.5,11/28/2026,on hold
+Google,2524557,Budapest,6.0,9/26/2026,rejected
+Siemens,498288,Thị Trấn Mường Lát,8.0,10/5/2026,offer extended
+Zoho,1003997,Chishtiān Mandi,6.0,11/19/2026,not selected
+Capgemini,706773,Geyuan,7.0,8/14/2026,interview scheduled
+Nvidia,1014853,Xike,6.9,9/20/2026,waiting for response
+Wipro,314415,Puan Selatan,9.1,11/30/2026,waiting for response
+Morgan Stanley,2617918,Guanting,7.5,8/31/2026,not selected
+Google,564298,Bianxiong,6.4,8/18/2026,offer extended
+Bosch,1601180,Brok,8.3,12/26/2026,interview scheduled
+Oracle,2114648,Maldonado,6.3,9/29/2026,withdrawn
+Samsung,1846008,Examília,9.1,12/17/2026,rejected
+Flipkart,2838715,Naranjos,8.5,5/9/2026,on hold
+TCS,2327150,São Torcato,6.0,7/18/2026,on hold
+Capgemini,799376,Turku,9.1,5/6/2026,hired
+Cisco,2269465,Tateyama,7.2,8/3/2026,under review
+Adobe,1681297,Sosnytsya,8.3,2/22/2026,waiting for response
+SAP,1436157,Siguiri,10.0,5/13/2026,withdrawn
+Adobe,2025969,Popovice,9.2,8/6/2026,waiting for response
+Oracle,2429215,San Pedro,8.4,10/13/2026,rejected
+SAP,2150656,Decatur,7.4,1/22/2026,on hold
+PhonePe,382226,Changliang,8.7,6/22/2026,pending
+Samsung,389778,Cibangun Tengah,9.5,6/5/2026,rejected
+SAP,2775723,Fengpo,9.2,12/14/2026,on hold
+TCS,2738276,Pilar do Sul,8.6,9/20/2026,offer extended
+Nvidia,1629163,Köping,6.7,11/23/2026,hired
+Dell,2800482,Zvenyhorodka,8.8,5/27/2026,waiting for response
+Amazon,2294209,Zapod,8.7,10/13/2026,interview scheduled
+TCS,1429541,Songjiang,6.0,1/15/2026,under review
+TCS,1443263,Silao,8.5,2/16/2026,waiting for response
+Flipkart,647320,Tarvasjoki,5.7,10/13/2026,rejected
+Goldman Sachs,849821,Warungbuah,5.8,5/9/2026,hired
+Capgemini,2977019,Issy-les-Moulineaux,5.0,6/1/2026,hired
+Goldman Sachs,1821644,Shabel’skoye,9.0,6/30/2026,under review
+Oracle,1832006,Marcabal,9.0,4/7/2026,pending
+Google,2431705,Boca Chica,9.3,8/18/2026,pending
+Siemens,2106461,Don Carlos,8.2,3/23/2026,not selected
+JPMorgan,1225840,Kakamega,8.5,10/4/2026,hired
+Dell,2051387,Kujang-ŭp,7.8,6/29/2026,hired
+JPMorgan,1147253,Giado,5.3,5/22/2026,rejected
+Flipkart,2159376,Qinggis Han,5.7,4/28/2026,hired
+Flipkart,2365465,Nantes,9.6,6/27/2026,rejected
+Zoho,2490498,Bagangan,7.1,6/5/2026,on hold
+Paytm,899561,Shumerlya,6.0,5/7/2026,interview scheduled
+Morgan Stanley,2169880,Covas da Raposa,5.4,11/8/2026,pending
+Oracle,1659942,Laolong,5.4,1/4/2026,waiting for response
+Goldman Sachs,2968004,Dovhe,8.6,5/16/2026,offer extended
+SAP,724954,Shenji,5.5,9/20/2026,rejected
+Accenture,1801705,Majingklak,6.1,11/3/2026,not selected
+Google,1412370,West Island,7.1,12/13/2026,interview scheduled
+Paytm,1622500,Pantin,6.4,7/13/2026,under review
+Cisco,625040,Zhongfan,5.4,4/7/2026,under review
+Dell,2247526,Viimsi,5.5,2/18/2026,rejected
+Goldman Sachs,1396176,Yangjingziwan,7.2,2/24/2026,on hold
+Siemens,2531069,Hetang,5.6,3/20/2026,withdrawn
+Morgan Stanley,2116970,São Roque,9.2,9/1/2026,interview scheduled
+Cisco,2791700,Sumbersari Wetan,6.9,2/16/2026,rejected
+JPMorgan,928020,Terrugem,5.9,1/19/2026,on hold
+Siemens,567354,Isoka,5.5,10/14/2026,interview scheduled
+Zoho,334657,Sexmoan,6.5,4/11/2026,rejected
+Siemens,387676,Al Wardānīn,9.5,10/9/2026,interview scheduled
+Infosys,1265181,Idanre,9.7,12/27/2026,pending
+Intel,2816450,Thành Phố Hạ Long,6.2,2/13/2026,not selected
+Infosys,1795361,Văn Giang,6.9,1/24/2026,waiting for response
+Bosch,1575001,Laozhuang,8.2,10/31/2026,not selected
+Infosys,2830849,Lekas,8.1,8/10/2026,not selected
+Oracle,531184,Rāmganj,5.9,3/4/2026,withdrawn
+Goldman Sachs,2250673,Bronnitsy,5.5,2/13/2026,on hold
+Nvidia,1977541,Rio Claro,7.2,6/7/2026,interview scheduled
+Nvidia,1562404,Messina,7.5,9/15/2026,waiting for response
+PhonePe,2088902,Cullinan,7.2,3/8/2026,under review
+Capgemini,1744947,Paoua,5.4,7/28/2026,waiting for response
+Siemens,2159644,Tongqian,5.4,6/13/2026,waiting for response
+Intel,2377198,Pregradnaya,8.2,5/15/2026,on hold
+Adobe,2563670,Ciervo Petiso,6.6,6/14/2026,under review
+Samsung,1984925,Bako,8.9,7/11/2026,on hold
+Dell,550875,Indianapolis,7.9,7/18/2026,not selected
+Flipkart,343370,Yupiltepeque,6.4,3/6/2026,withdrawn
+Dell,953338,Paradahan,9.9,9/25/2026,not selected
+Capgemini,2825683,Osapsio,9.0,12/1/2026,pending
+Nvidia,2642306,Panyingkiran,6.7,4/19/2026,waiting for response
+Oracle,1923728,Kamojimachō-jōgejima,7.8,5/30/2026,pending
+Samsung,2305738,Vale Maceiras,6.1,5/29/2026,offer extended
+Nvidia,2481069,Imperatriz,9.9,9/7/2026,pending
+Infosys,408379,Alenquer,9.3,3/2/2026,on hold
+Goldman Sachs,652854,Klishkivtsi,9.4,4/20/2026,under review
+Adobe,1059239,Camlachie,6.4,5/10/2026,offer extended
+Microsoft,2004884,Huohua,9.5,4/6/2026,withdrawn
+Siemens,445676,Midland,8.6,10/14/2026,on hold
+Zoho,938062,Komsomolsk-on-Amur,6.0,4/4/2026,withdrawn
+Wipro,1325782,Strizhi,5.1,5/30/2026,on hold
+Goldman Sachs,2662882,Zaoshi,7.6,4/4/2026,hired
+Capgemini,1340290,Kapyl’,8.9,7/22/2026,pending
+Capgemini,392369,Pakapasan Girang,6.2,11/18/2026,withdrawn
+Nvidia,2661375,Kutacane,5.1,5/5/2026,pending
+Flipkart,2293033,Haoyi,7.3,3/27/2026,pending
+PhonePe,2477675,Huacrapuquio,6.3,7/18/2026,withdrawn
+TCS,1362936,Peachland,5.1,1/2/2026,rejected
+Google,1142846,Seidu,8.4,11/15/2026,rejected
+Siemens,2504099,Kingsport,7.8,12/28/2026,under review
+Amazon,2247477,Bastia,7.9,12/18/2026,on hold
+Accenture,1285166,Danyang,5.7,2/8/2026,on hold
+Dell,1645612,Manicahan,6.5,8/12/2026,under review
+PhonePe,693302,Ponta da Garça,5.5,4/15/2026,waiting for response
+JPMorgan,2419294,Bayombong,6.1,7/29/2026,under review
+PhonePe,986881,Somba,7.5,12/23/2026,on hold
+Goldman Sachs,2862764,Perre,6.6,3/26/2026,offer extended
+Infosys,2465930,Panalanoy,9.2,10/16/2026,rejected
+SAP,2156933,Yankou,9.5,11/7/2026,under review
+Infosys,2738971,Ekenäs,5.2,7/27/2026,under review
+Google,1893410,Jingning Chengguanzhen,9.8,11/5/2026,interview scheduled
+Siemens,2461849,Reshui,7.8,4/21/2026,pending
+Capgemini,2644556,Sobienie Jeziory,6.4,11/4/2026,waiting for response
+Capgemini,1671333,Aubenas,8.7,8/7/2026,on hold
+Cisco,471705,Ar Rawnah,6.0,9/15/2026,hired
+Bosch,2723462,Khairpur Nathan Shāh,8.7,12/17/2026,not selected
+Bosch,1312929,Cabo de Vila,9.6,4/6/2026,hired
+Dell,893606,Alençon,6.1,10/8/2026,pending
+Cisco,2865005,Shīeli,8.4,6/5/2026,rejected
+Capgemini,2691491,Kraslice,5.1,3/26/2026,waiting for response
+PhonePe,791687,Sioux City,9.4,4/8/2026,not selected
+Morgan Stanley,2546045,Pasto,6.2,9/16/2026,offer extended
+Intel,1640107,Jurovski Dol,5.8,8/4/2026,pending
+Amazon,518793,Malvinas Argentinas,5.2,11/24/2026,pending
+Flipkart,1101080,Sinarbakti,7.3,9/10/2026,withdrawn
+Capgemini,2726251,Lindavista,5.8,6/17/2026,not selected
+Morgan Stanley,1490627,Solna,8.9,11/21/2026,not selected
+Wipro,1466726,Ōfunato,7.5,1/8/2026,not selected
+Oracle,1798601,Bandeirantes,6.6,11/12/2026,offer extended
+Wipro,326528,Nusaherang,5.3,1/25/2026,withdrawn
+SAP,459275,Yuanba,7.1,6/22/2026,pending
+Microsoft,1270986,Tosno,9.8,6/21/2026,hired
+Google,1703213,Novoalekseyevskaya,5.4,1/3/2026,offer extended
+Microsoft,933062,Krasnyy Gulyay,6.4,2/11/2026,interview scheduled
+Siemens,1703595,Vawkavysk,6.7,11/25/2026,under review
+PhonePe,1462162,Tongole,7.4,7/24/2026,not selected
+Microsoft,1567791,Stockholm,7.2,2/25/2026,offer extended
+Infosys,518512,Melaka,8.6,5/31/2026,offer extended
+PhonePe,976593,Belišće,6.6,11/17/2026,not selected
+Infosys,2275900,Kuantan,9.7,8/11/2026,pending
+Bosch,2778073,Yeni Suraxanı,7.4,8/29/2026,on hold
+Oracle,958586,Lieyu,9.1,9/15/2026,on hold
+Cisco,2608964,Hubynykha,8.5,8/23/2026,waiting for response
+Amazon,1329215,Guangyi,5.7,6/25/2026,on hold
+Capgemini,2111701,Langres,5.2,1/8/2026,interview scheduled
+Dell,1633378,Haishan,7.0,4/21/2026,offer extended
+Morgan Stanley,861656,Clearwater,8.1,4/25/2026,hired
+Morgan Stanley,1360612,Không,8.2,8/28/2026,pending
+JPMorgan,1480420,Tylicz,5.4,9/26/2026,pending
+Samsung,2633924,Alpedrinha,6.6,9/11/2026,interview scheduled
+Google,1705924,Mar del Plata,7.1,8/5/2026,pending
+Samsung,320703,Pithári,9.8,3/31/2026,on hold
+Samsung,1118501,Bahir Dar,5.4,7/16/2026,waiting for response
+Amazon,659742,Mubende,7.2,5/18/2026,hired
+Zoho,860541,Minle,9.1,5/11/2026,pending
+Siemens,2802091,Beishan,7.0,3/18/2026,on hold
+Accenture,1971968,Cuihuangkou,6.4,12/10/2026,pending
+Microsoft,1243544,Lahuaytambo,7.3,7/23/2026,waiting for response
+TCS,2676584,Tarimbang,9.3,7/2/2026,offer extended
+Bosch,2139271,Asquipata,7.1,2/14/2026,not selected
+Paytm,1750608,København,5.1,3/9/2026,rejected
+Cisco,2702707,Mengjia,9.6,2/15/2026,rejected
+Infosys,1157807,Yanmenkou,7.6,3/20/2026,on hold
+TCS,2122784,Sebuku,5.6,4/13/2026,interview scheduled
+Wipro,1480165,Longtanping,6.9,2/12/2026,hired
+Wipro,2358442,Kohtla-Järve,8.2,4/16/2026,waiting for response
+Intel,435930,Cabusao,9.2,11/7/2026,offer extended
+Paytm,1111947,Jiandou,7.8,6/19/2026,not selected
+Google,744966,Takehara,5.5,10/15/2026,on hold
+PhonePe,2755893,Baton Rouge,6.4,9/18/2026,offer extended
+Microsoft,2974494,Domampot,7.4,11/29/2026,hired
+Oracle,1946809,Nynäshamn,5.3,3/18/2026,withdrawn
+Zoho,1608279,Calabugao,6.9,10/12/2026,offer extended
+Morgan Stanley,1188180,Lagnieu,8.5,3/1/2026,on hold
+Morgan Stanley,1524467,Tangwei,5.7,11/20/2026,interview scheduled
+Samsung,1626987,Seke,9.3,12/22/2026,waiting for response
+Morgan Stanley,1106775,Enyerhyetykaw,7.9,10/23/2026,withdrawn
+Adobe,370272,Hengli,5.1,1/14/2026,not selected
+Capgemini,1099231,Yangjian,8.1,11/7/2026,on hold
+Flipkart,731551,Mont-Joli,9.6,12/22/2026,pending
+Goldman Sachs,1630434,Kamyshevka Vtoraya,7.6,12/11/2026,not selected
+Amazon,723749,Persen,7.2,6/30/2026,not selected
+Morgan Stanley,874648,Břeclav,6.8,4/30/2026,waiting for response
+Intel,2067871,Pyhäsalmi,5.5,8/21/2026,not selected
+Infosys,2747710,Nangerang,7.0,6/24/2026,under review
+Flipkart,404480,Międzyrzecz,8.3,10/6/2026,not selected
+Paytm,1115421,Jankovec,6.8,8/22/2026,withdrawn
+Microsoft,2083001,Beo,9.6,7/17/2026,offer extended
+Dell,932935,Tingping,5.4,7/17/2026,under review
+JPMorgan,2620811,Xilópolis,7.9,2/9/2026,rejected
+Microsoft,1492688,Beizhang,7.7,7/23/2026,on hold
+Siemens,1878486,Sendangagung,9.1,6/4/2026,under review
+JPMorgan,939834,Verkhniy Baskunchak,8.8,6/6/2026,waiting for response
+Adobe,2191406,Nanggewer,5.4,10/13/2026,hired
+Morgan Stanley,2668179,San Miguel de Tucumán,9.4,8/13/2026,not selected
+PhonePe,2457628,Sahagún,9.8,9/1/2026,withdrawn
+Adobe,1510526,Utena,7.6,7/28/2026,rejected
+Amazon,1724738,Barcelona,7.2,3/9/2026,rejected
+Flipkart,2465557,Puerto Castilla,6.9,3/20/2026,waiting for response
+Accenture,2756126,Linhares,5.9,12/24/2026,not selected
+Wipro,1775034,Ipiaú,9.3,3/18/2026,waiting for response
+Nvidia,2079024,Xinyang,7.9,12/1/2026,offer extended
+JPMorgan,2321855,Tammela,9.5,2/20/2026,offer extended
+Nvidia,902506,Anhua,7.1,3/16/2026,interview scheduled
+Bosch,495231,Fuyang,7.4,2/19/2026,not selected
+Paytm,444892,Sandefjord,9.2,10/31/2026,interview scheduled
+Accenture,400231,Tsurusaki,8.0,6/22/2026,rejected
+Cisco,1698433,Chengzhong,6.9,10/10/2026,pending
+Morgan Stanley,1781016,Jishigang,8.5,12/17/2026,rejected
+Nvidia,623005,Babakantonggoh,5.3,7/28/2026,pending
+Oracle,405468,Stare Miasto,9.2,6/28/2026,pending
+Paytm,2052227,Bayan,6.2,3/26/2026,pending
+Amazon,2972702,Phước An,8.2,3/26/2026,on hold
+Goldman Sachs,2983078,Mlandizi,10.0,8/10/2026,hired
+TCS,2434809,Silver Spring,7.1,7/12/2026,waiting for response
+Oracle,526470,Saripin,7.4,12/10/2026,not selected
+Morgan Stanley,2132161,Chamouny,8.8,8/28/2026,hired
+Samsung,2733178,Santa Fe,7.7,12/3/2026,waiting for response
+Paytm,1786366,Mingjing,6.6,7/31/2026,pending
+Infosys,2227772,Rantepang,9.4,11/3/2026,not selected
+Samsung,2776393,Borås,10.0,5/26/2026,hired
+Amazon,612149,Jinggongqiao,6.6,7/19/2026,interview scheduled
+Wipro,1299145,Gutang,5.6,9/2/2026,withdrawn
+Infosys,1491840,Albuera,5.1,4/9/2026,pending
+Microsoft,2420783,Jiangya,9.6,11/1/2026,on hold
+PhonePe,448216,Sungaibengkal,5.4,9/14/2026,on hold
+Adobe,1236025,Bantul,7.4,3/2/2026,interview scheduled
+Goldman Sachs,1691890,Kisasa,6.0,9/6/2026,offer extended
+Samsung,2253341,Shangwuzhuang,5.1,6/30/2026,withdrawn
+SAP,2894958,Tabuc Pontevedra,6.9,2/20/2026,pending
+Infosys,1671640,Kastav,8.2,11/5/2026,not selected
+Zoho,470904,Paris La Défense,7.0,9/24/2026,not selected
+Samsung,2710239,Vicente Guerrero,7.8,5/22/2026,rejected
+Oracle,1483900,Lupo,9.6,11/17/2026,interview scheduled
+Wipro,416325,Tyresö,5.5,4/10/2026,waiting for response
+Amazon,2320227,Banjeru,8.6,3/4/2026,on hold
+Accenture,2129498,Biris Daja,8.3,12/16/2026,pending
+Morgan Stanley,929632,Jingyang,8.2,5/23/2026,withdrawn
+Paytm,2736084,Hongqiao,5.1,9/6/2026,hired
+TCS,1645139,Phatthana Nikhom,7.8,11/12/2026,interview scheduled
+JPMorgan,1023891,Valle de La Pascua,7.6,5/17/2026,waiting for response
+Nvidia,1288152,Châu Thành,6.9,12/24/2026,not selected
+TCS,1197710,Antíparos,7.0,2/12/2026,rejected
+Wipro,838205,Cool űrhajó,5.8,11/9/2026,on hold
+Goldman Sachs,1842111,Ilhéus,9.7,6/15/2026,rejected
+Paytm,2000196,Cape Coast,6.7,2/14/2026,rejected
+Morgan Stanley,1716036,Daniëlskuil,6.7,5/24/2026,on hold
+Google,2690377,Dongtuan,8.0,10/15/2026,offer extended
+Zoho,1628591,Bumirejo,6.8,9/1/2026,hired
+SAP,2110688,Sincé,9.4,12/10/2026,not selected
+Bosch,1933135,San Roque,9.0,6/21/2026,rejected
+JPMorgan,1155824,Kacha,8.5,12/19/2026,offer extended
+Oracle,1434283,Dokri,9.0,10/22/2026,waiting for response
+JPMorgan,2725909,Mansilingan,6.8,12/16/2026,under review
+Amazon,858069,Netishyn,7.7,8/10/2026,waiting for response
+Zoho,2903234,Yong’an,9.9,10/2/2026,offer extended
+Flipkart,2375287,Yufrus,9.0,3/19/2026,not selected
+Capgemini,1090396,Amboise,8.1,10/13/2026,rejected
+Intel,730700,Baton Rouge,5.7,9/9/2026,pending
+Flipkart,1808279,Pilar,8.8,9/23/2026,hired
+Oracle,786269,Barusuda,6.0,1/13/2026,pending
+Microsoft,515209,Chongqing,7.9,1/29/2026,hired
+Wipro,725405,Qitai,9.1,5/15/2026,hired
+Flipkart,2505543,Colorado Springs,7.8,2/25/2026,not selected
+Samsung,756429,Przecław,9.4,8/4/2026,waiting for response
+PhonePe,2315580,Pasar Kidul,7.1,11/1/2026,under review
+Nvidia,878739,Rublëvo,7.2,6/20/2026,withdrawn
+Goldman Sachs,2199698,Shuangnian,7.5,1/4/2026,pending
+Cisco,2102689,Liudu,6.3,10/7/2026,rejected
+Accenture,1901283,Tankhoy,7.9,12/13/2026,not selected
+Flipkart,1605279,Düsseldorf,9.3,8/1/2026,on hold
+Infosys,1125895,Chugur,5.0,1/7/2026,offer extended
+Zoho,2258657,Adar,8.5,8/30/2026,withdrawn
+SAP,1185086,Jāmpur,7.2,2/23/2026,withdrawn
+Paytm,2841471,Makoko,7.4,12/18/2026,on hold
+SAP,623631,Comodoro Rivadavia,9.7,3/8/2026,waiting for response
+Wipro,1833803,Hualfín,6.0,12/5/2026,offer extended
+Wipro,1212565,Aguas Corrientes,6.1,9/20/2026,rejected
+Zoho,369974,Hamamatsu,8.4,5/3/2026,withdrawn
+Nvidia,1188310,Aliaga,6.1,6/1/2026,not selected
+Paytm,2445323,Taibao,8.3,12/11/2026,interview scheduled
+Flipkart,971334,High River,6.3,5/12/2026,under review
+Adobe,674271,Jiangkou,7.9,8/24/2026,withdrawn
+SAP,415270,Huanghua,8.7,1/31/2026,waiting for response
+Amazon,999123,Gongqiao,6.6,7/25/2026,interview scheduled
+PhonePe,1393869,Pará de Minas,6.1,6/22/2026,offer extended
+Siemens,748827,Aix-en-Provence,8.2,9/22/2026,waiting for response
+Morgan Stanley,2543541,Al Jabīn,7.0,6/1/2026,interview scheduled
+Goldman Sachs,1761688,Nansheng,5.4,4/9/2026,under review
+Paytm,2551953,Lanas,9.5,6/25/2026,on hold
+Intel,2445426,Wingham,8.6,8/14/2026,not selected
+Goldman Sachs,1475970,Pawłosiów,7.4,4/23/2026,offer extended
+Cisco,2547097,Enzan,7.4,5/23/2026,interview scheduled
+PhonePe,2267365,Kabarnet,6.1,2/15/2026,withdrawn
+Dell,2484190,Yarīm,8.3,12/2/2026,waiting for response
+SAP,1827376,Nashville,5.2,10/8/2026,interview scheduled
+Google,1474034,Izlake,8.8,5/17/2026,under review
+Google,463650,Yuyue,9.8,7/2/2026,under review
+Zoho,1109858,Legok,6.6,8/28/2026,interview scheduled
+TCS,516168,Puerto Maldonado,5.9,6/29/2026,not selected
+Accenture,2433313,Stare Miasto,6.8,2/14/2026,pending
+Wipro,2328981,Luena,9.0,2/12/2026,withdrawn

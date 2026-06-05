@@ -3,6 +3,9 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  Funnel,
+  FunnelChart,
+  LabelList,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -12,11 +15,12 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 import { FiBriefcase, FiCheckCircle, FiFileText, FiGift, FiTrendingUp, FiUsers, FiXCircle } from "react-icons/fi";
-import { dashboardApi } from "../api/services";
+import { companiesApi, dashboardApi } from "../api/services";
 import Card from "../components/ui/Card";
 import PageHeader from "../components/ui/PageHeader";
 import { ErrorState, LoadingState } from "../components/ui/StateBlock";
 import useAsync from "../hooks/useAsync";
+import { formatDate } from "../utils/formatters";
 
 const COLORS = ["#2563EB", "#DC2626", "#F59E0B", "#6366F1"];
 
@@ -42,15 +46,35 @@ function KpiCard({ icon: Icon, label, value, trend }) {
   );
 }
 
+const daysRemaining = (value) => {
+  const today = new Date();
+  const date = new Date(value);
+  today.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+  return Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+};
+
 export default function DashboardPage() {
   const { data, error, loading, refresh } = useAsync(async () => {
-    const [statsResponse, analyticsResponse] = await Promise.all([
+    const [
+      statsResponse,
+      analyticsResponse,
+      departmentResponse,
+      funnelResponse,
+      companiesResponse,
+    ] = await Promise.all([
       dashboardApi.stats(),
       dashboardApi.companyAnalytics(),
+      dashboardApi.departmentAnalytics(),
+      dashboardApi.funnel(),
+      companiesApi.list(),
     ]);
 
     return {
       analytics: analyticsResponse.data.analytics || [],
+      departmentAnalytics: departmentResponse.data.analytics || [],
+      funnel: funnelResponse.data.funnel || {},
+      companies: companiesResponse.data.companies || [],
       stats: statsResponse.data.stats || {},
     };
   }, []);
@@ -70,6 +94,17 @@ export default function DashboardPage() {
     { name: "In Process", value: stats.inProcess || 0 },
     { name: "Offer Received", value: stats.offerReceived || 0 },
   ];
+  const funnelData = [
+    { name: "Applied", value: data.funnel.applied || 0, fill: "#2563EB" },
+    { name: "Round 1", value: data.funnel.round1 || 0, fill: "#3B82F6" },
+    { name: "Round 2", value: data.funnel.round2 || 0, fill: "#60A5FA" },
+    { name: "Round 3", value: data.funnel.round3 || 0, fill: "#93C5FD" },
+    { name: "Selected", value: data.funnel.selected || 0, fill: "#16A34A" },
+  ];
+  const upcomingDrives = data.companies
+    .filter((company) => company.driveDate && daysRemaining(company.driveDate) >= 0)
+    .sort((a, b) => new Date(a.driveDate) - new Date(b.driveDate))
+    .slice(0, 10);
 
   return (
     <>
@@ -132,6 +167,69 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+
+      <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <Card className="p-5">
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold text-ink">Department Analytics</h2>
+            <p className="mt-1 text-sm text-muted">Student strength, selections, and placement rate by department.</p>
+          </div>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.departmentAnalytics}>
+                <CartesianGrid stroke="#E2E8F0" strokeDasharray="4 4" vertical={false} />
+                <XAxis dataKey="department" stroke="#64748B" tickLine={false} />
+                <YAxis stroke="#64748B" tickLine={false} />
+                <Tooltip />
+                <Bar dataKey="students" fill="#2563EB" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="selected" fill="#16A34A" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="placementRate" fill="#F59E0B" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold text-ink">Recruitment Funnel</h2>
+            <p className="mt-1 text-sm text-muted">Candidate progression across the interview pipeline.</p>
+          </div>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <FunnelChart>
+                <Tooltip />
+                <Funnel data={funnelData} dataKey="value" nameKey="name">
+                  <LabelList dataKey="name" fill="#0F172A" position="right" />
+                </Funnel>
+              </FunnelChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </div>
+
+      <Card className="mt-6 p-5">
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold text-ink">Upcoming Drives</h2>
+          <p className="mt-1 text-sm text-muted">Next 10 company drives sorted by date.</p>
+        </div>
+        {upcomingDrives.length ? (
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+            {upcomingDrives.map((company) => (
+              <div className="rounded-xl border border-border bg-slate-50 p-4" key={company._id}>
+                <p className="text-sm font-semibold text-ink">{company.companyName}</p>
+                <p className="mt-2 text-xs text-muted">{formatDate(company.driveDate)}</p>
+                <p className="mt-3 text-sm font-semibold text-primary">
+                  {daysRemaining(company.driveDate) === 0 ? "Today" : `${daysRemaining(company.driveDate)} days remaining`}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted">
+            No upcoming drives scheduled.
+          </div>
+        )}
+      </Card>
     </>
   );
 }

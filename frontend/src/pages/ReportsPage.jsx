@@ -23,6 +23,32 @@ import { formatCurrency } from "../utils/formatters";
 
 const COLORS = ["#2563EB", "#16A34A", "#F59E0B", "#DC2626", "#6366F1"];
 
+function exportCsv(filename, rows) {
+  if (!rows.length) {
+    return;
+  }
+
+  const headers = Object.keys(rows[0]);
+  const csvRows = [
+    headers.join(","),
+    ...rows.map((row) =>
+      headers
+        .map((header) => {
+          const value = row[header] ?? "";
+          return `"${String(value).replaceAll('"', '""')}"`;
+        })
+        .join(",")
+    ),
+  ];
+  const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function Metric({ icon: Icon, label, value }) {
   return (
     <Card className="p-5">
@@ -83,7 +109,59 @@ export default function ReportsPage() {
   return (
     <>
       <PageHeader
-        action={<Button variant="secondary"><FiDownload />Export View</Button>}
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Button
+              onClick={() =>
+                exportCsv(
+                  "campustrack-students.csv",
+                  data.students.map((student) => ({
+                    usn: student.usn,
+                    name: student.name,
+                    email: student.email,
+                    department: student.department,
+                    cgpa: student.cgpa,
+                  }))
+                )
+              }
+              variant="secondary"
+            >
+              <FiDownload />Export Students
+            </Button>
+            <Button
+              onClick={() =>
+                exportCsv(
+                  "campustrack-companies.csv",
+                  data.companies.map((company) => ({
+                    company: company.companyName,
+                    package: company.package,
+                    location: company.location,
+                    status: company.status,
+                  }))
+                )
+              }
+              variant="secondary"
+            >
+              <FiDownload />Export Companies
+            </Button>
+            <Button
+              onClick={() =>
+                exportCsv(
+                  "campustrack-applications.csv",
+                  data.applications.map((application) => ({
+                    student: application.studentId?.name || "",
+                    company: application.companyId?.companyName || "",
+                    currentRound: application.currentRound || 1,
+                    status: application.status,
+                  }))
+                )
+              }
+              variant="secondary"
+            >
+              <FiDownload />Export Applications
+            </Button>
+          </div>
+        }
         description="Review placement outcomes, company participation, and student progress."
         title="Reports"
       />

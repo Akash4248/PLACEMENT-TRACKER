@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiEdit2, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
+import { FiEdit2, FiPlus, FiSearch, FiTrash2, FiUploadCloud } from "react-icons/fi";
 import { studentsApi } from "../api/services";
 import Button from "../components/ui/Button";
 import DataTable from "../components/ui/DataTable";
@@ -8,6 +8,7 @@ import FormField, { inputClass } from "../components/ui/FormField";
 import Modal from "../components/ui/Modal";
 import PageHeader from "../components/ui/PageHeader";
 import { ErrorState, LoadingState } from "../components/ui/StateBlock";
+import UploadPreviewModal from "../components/ui/UploadPreviewModal";
 import useAsync from "../hooks/useAsync";
 
 function StudentForm({ initialValues, onCancel, onSaved }) {
@@ -91,6 +92,8 @@ export default function StudentsPage() {
   const [query, setQuery] = useState("");
   const [editing, setEditing] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importSummary, setImportSummary] = useState(null);
   const { data, error, loading, refresh } = useAsync(async () => {
     const { data: response } = await studentsApi.list({ search: query });
     return response.students || [];
@@ -121,7 +124,12 @@ export default function StudentsPage() {
   return (
     <>
       <PageHeader
-        action={<Button onClick={() => { setEditing(null); setModalOpen(true); }}><FiPlus />Add Student</Button>}
+        action={
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => { setImportSummary(null); setImportOpen(true); }} variant="secondary"><FiUploadCloud />Import Students</Button>
+            <Button onClick={() => { setEditing(null); setModalOpen(true); }}><FiPlus />Add Student</Button>
+          </div>
+        }
         description="Manage student records, eligibility details, and placement-ready profiles."
         title="Students"
       />
@@ -133,6 +141,18 @@ export default function StudentsPage() {
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Edit Student" : "Add Student"}>
         <StudentForm initialValues={editing} onCancel={() => setModalOpen(false)} onSaved={() => { setModalOpen(false); refresh(); }} />
       </Modal>
+      <UploadPreviewModal
+        acceptedColumns={["usn", "name", "email", "department", "cgpa"]}
+        onClose={() => setImportOpen(false)}
+        onSubmit={async (file, onProgress) => {
+          const { data: response } = await studentsApi.import(file, onProgress);
+          setImportSummary(response);
+          refresh();
+        }}
+        open={importOpen}
+        summary={importSummary}
+        title="Import Students"
+      />
     </>
   );
 }

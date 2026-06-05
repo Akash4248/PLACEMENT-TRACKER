@@ -7,6 +7,7 @@ const companyRoutes = require("./routes/companyRoutes");
 const roundRoutes = require("./routes/roundRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const settingsRoutes = require("./routes/settingsRoutes");
 
 
 const app = express();
@@ -34,5 +35,6 @@ app.use(
   "/api/dashboard",
   dashboardRoutes
 );
+app.use("/api/settings", settingsRoutes);
 
 module.exports = app;

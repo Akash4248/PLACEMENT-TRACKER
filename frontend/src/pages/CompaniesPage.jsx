@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiEdit2, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiEdit2, FiEye, FiPlus, FiTrash2 } from "react-icons/fi";
 import { companiesApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -20,6 +20,8 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
       description: "",
       driveDate: "",
       eligibilityCGPA: "",
+      minimumCGPA: "",
+      allowedDepartments: "",
       location: "",
       package: "",
       status: "Upcoming",
@@ -31,6 +33,10 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
     const payload = {
       ...values,
       eligibilityCGPA: Number(values.eligibilityCGPA || 0),
+      minimumCGPA: Number(values.minimumCGPA || values.eligibilityCGPA || 0),
+      allowedDepartments: values.allowedDepartments
+        ? values.allowedDepartments.split(",").map((department) => department.trim()).filter(Boolean)
+        : [],
       package: Number(values.package),
     };
     try {
@@ -58,6 +64,12 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
         <FormField label="Eligibility CGPA">
           <input className={inputClass} step="0.1" type="number" {...register("eligibilityCGPA")} />
         </FormField>
+        <FormField label="Minimum CGPA">
+          <input className={inputClass} step="0.1" type="number" {...register("minimumCGPA")} />
+        </FormField>
+        <FormField label="Allowed Departments">
+          <input className={inputClass} placeholder="CSE, ISE, AIML" {...register("allowedDepartments")} />
+        </FormField>
         <FormField label="Drive Date">
           <input className={inputClass} type="date" {...register("driveDate")} />
         </FormField>
@@ -83,16 +95,36 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
 export default function CompaniesPage() {
   const [editing, setEditing] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [eligibilityCompany, setEligibilityCompany] = useState(null);
+  const [eligibility, setEligibility] = useState(null);
+  const [eligibilityLoading, setEligibilityLoading] = useState(false);
+  const [eligibilityError, setEligibilityError] = useState("");
   const { data, error, loading, refresh } = useAsync(async () => {
     const { data: response } = await companiesApi.list();
     return response.companies || [];
   }, []);
   const rows = data || [];
 
+  const viewEligibility = async (company) => {
+    setEligibilityCompany(company);
+    setEligibility(null);
+    setEligibilityError("");
+    setEligibilityLoading(true);
+
+    try {
+      const { data: response } = await companiesApi.eligibleStudents(company._id);
+      setEligibility(response);
+    } catch (err) {
+      setEligibilityError(err.message);
+    } finally {
+      setEligibilityLoading(false);
+    }
+  };
+
   const columns = useMemo(() => [
     { key: "companyName", header: "Company", render: (row) => <div><p className="font-semibold">{row.companyName}</p><p className="text-xs text-muted">{row.location}</p></div> },
     { key: "package", header: "Package", render: (row) => `${formatCurrency(row.package)} LPA` },
-    { key: "eligibilityCGPA", header: "Eligibility", render: (row) => `${row.eligibilityCGPA || 0}+ CGPA` },
+    { key: "eligibilityCGPA", header: "Eligibility", render: (row) => `${row.minimumCGPA || row.eligibilityCGPA || 0}+ CGPA` },
     { key: "driveDate", header: "Drive Date", render: (row) => formatDate(row.driveDate) },
     { key: "status", header: "Status", render: (row) => <Badge label={row.status} /> },
     {
@@ -100,7 +132,8 @@ export default function CompaniesPage() {
       header: "Actions",
       render: (row) => (
         <div className="flex gap-2">
-          <Button onClick={() => { setEditing({ ...row, driveDate: row.driveDate?.slice(0, 10) || "" }); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
+          <Button onClick={() => { setEditing({ ...row, driveDate: row.driveDate?.slice(0, 10) || "", allowedDepartments: row.allowedDepartments?.join(", ") || "" }); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
+          <Button onClick={() => viewEligibility(row)} size="sm" variant="secondary"><FiEye /></Button>
           <Button onClick={async () => { await companiesApi.remove(row._id); refresh(); }} size="sm" variant="ghost"><FiTrash2 className="text-danger" /></Button>
         </div>
       ),
@@ -120,6 +153,44 @@ export default function CompaniesPage() {
       <DataTable columns={columns} empty={{ title: "No companies yet", description: "Create a company drive before adding rounds or applications." }} rows={rows} />
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Edit Company" : "Add Company"}>
         <CompanyForm initialValues={editing} onCancel={() => setModalOpen(false)} onSaved={() => { setModalOpen(false); refresh(); }} />
+      </Modal>
+      <Modal open={Boolean(eligibilityCompany)} onClose={() => setEligibilityCompany(null)} title={`Eligible Students - ${eligibilityCompany?.companyName || ""}`}>
+        {eligibilityLoading ? <LoadingState label="Checking eligibility" /> : null}
+        {eligibilityError ? <ErrorState message={eligibilityError} onRetry={() => viewEligibility(eligibilityCompany)} /> : null}
+        {eligibility ? (
+          <div className="space-y-6">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-border bg-slate-50 p-4">
+                <p className="text-2xl font-bold text-success">{eligibility.eligibleCount}</p>
+                <p className="text-sm text-muted">Eligible Students</p>
+              </div>
+              <div className="rounded-xl border border-border bg-slate-50 p-4">
+                <p className="text-2xl font-bold text-danger">{eligibility.notEligibleCount}</p>
+                <p className="text-sm text-muted">Not Eligible Students</p>
+              </div>
+            </div>
+            <DataTable
+              columns={[
+                { key: "usn", header: "USN" },
+                { key: "name", header: "Name" },
+                { key: "department", header: "Department" },
+                { key: "cgpa", header: "CGPA" },
+              ]}
+              empty={{ title: "No eligible students", description: "No students match this company's eligibility rule." }}
+              rows={eligibility.students || []}
+            />
+            <DataTable
+              columns={[
+                { key: "usn", header: "USN" },
+                { key: "name", header: "Name" },
+                { key: "department", header: "Department" },
+                { key: "cgpa", header: "CGPA" },
+              ]}
+              empty={{ title: "No ineligible students", description: "Every student currently matches this eligibility rule." }}
+              rows={eligibility.notEligibleStudents || []}
+            />
+          </div>
+        ) : null}
       </Modal>
     </>
   );

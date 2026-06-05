@@ -55,6 +55,15 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  const signup = async (payload) => {
+    const { data } = await authApi.register(payload);
+    localStorage.setItem("campustrack_token", data.token);
+    localStorage.setItem("campustrack_user", JSON.stringify(data.user));
+    setToken(data.token);
+    setUser(data.user);
+    return data;
+  };
+
   const logout = () => {
     localStorage.removeItem("campustrack_token");
     localStorage.removeItem("campustrack_user");
@@ -68,6 +77,7 @@ export function AuthProvider({ children }) {
       isAuthenticated: Boolean(token),
       login,
       logout,
+      signup,
       token,
       user,
     }),
