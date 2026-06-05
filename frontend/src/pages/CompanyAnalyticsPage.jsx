@@ -13,7 +13,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { FiDownload, FiEye } from "react-icons/fi";
-import { companiesApi, roundsApi } from "../api/services";
+import { companiesApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -29,17 +29,16 @@ export default function CompanyAnalyticsPage() {
   const [shortlistOpen, setShortlistOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const { data, error, loading, refresh } = useAsync(async () => {
-    const [analyticsResponse, funnelResponse, shortlistResponse, attendanceResponse] = await Promise.all([
+    const [analyticsResponse, funnelResponse, shortlistResponse] = await Promise.all([
       companiesApi.analytics(companyId),
       companiesApi.funnel(companyId),
       companiesApi.shortlist(companyId),
-      roundsApi.attendanceByCompany(companyId),
     ]);
     return {
       ...analyticsResponse.data,
       funnel: funnelResponse.data.funnel || {},
       shortlist: shortlistResponse.data,
-      attendance: attendanceResponse.data.analytics || [],
+      attendance: analyticsResponse.data.attendanceAnalytics || [],
     };
   }, [companyId]);
 

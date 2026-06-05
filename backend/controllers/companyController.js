@@ -437,6 +437,7 @@ const getCompanyFunnel = async (req, res) => {
 const getCompanyAnalytics = async (req, res) => {
   try {
     const Application = require("../models/Application");
+    const InterviewRound = require("../models/InterviewRound");
     const company = await Company.findById(req.params.id);
 
     if (!company) {
@@ -498,6 +499,40 @@ const getCompanyAnalytics = async (req, res) => {
           )
         : 0,
     }));
+    const rounds = await InterviewRound.find({
+      companyId: company._id,
+    }).sort({ sequence: 1 });
+    const getAttendanceStatus = (roundEntry) => {
+      if (!roundEntry) return "Not Marked";
+      if (roundEntry.attendanceStatus) return roundEntry.attendanceStatus;
+      if (roundEntry.attended === false && roundEntry.result === "FAIL") return "Absent";
+      return roundEntry.attended ? "Present" : "Not Marked";
+    };
+    const attendanceAnalytics = rounds.map((round) => {
+      const entries = applications
+        .map((application) =>
+          application.rounds.find(
+            (entry) => String(entry.roundId) === String(round._id)
+          )
+        )
+        .filter(Boolean);
+      const present = entries.filter(
+        (entry) => getAttendanceStatus(entry) === "Present"
+      ).length;
+      const absent = entries.filter(
+        (entry) => getAttendanceStatus(entry) === "Absent"
+      ).length;
+      const total = present + absent;
+
+      return {
+        _id: round._id,
+        roundName: round.roundName,
+        total,
+        present,
+        absent,
+        attendanceRate: total ? Math.round((present / total) * 100) : 0,
+      };
+    });
 
     res.json({
       success: true,
@@ -515,6 +550,7 @@ const getCompanyAnalytics = async (req, res) => {
           : 0,
       },
       departmentBreakdown,
+      attendanceAnalytics,
     });
   } catch (error) {
     res.status(500).json({
