@@ -7,6 +7,7 @@ const {
   getCompanyAnalytics,
   getDepartmentAnalytics,
   getRecruitmentFunnel,
+  getAttendanceAnalytics,
 } = require("../controllers/dashboardController");
 
 const {
@@ -35,6 +36,12 @@ router.get(
   "/funnel",
   protect,
   getRecruitmentFunnel
+);
+
+router.get(
+  "/attendance",
+  protect,
+  getAttendanceAnalytics
 );
 
 module.exports = router;

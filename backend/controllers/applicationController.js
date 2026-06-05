@@ -12,25 +12,54 @@ const createAuditLog = require("../utils/audit");
 
 const applyRoundResult = async (
   application,
-  { roundId, attended, result }
+  { roundId, attended, result, attendanceStatus }
 ) => {
+  const normalizedAttendance =
+    attendanceStatus ||
+    (attended === true
+      ? "Present"
+      : attended === false
+        ? "Absent"
+        : "Not Marked");
+  const normalizedResult =
+    normalizedAttendance === "Absent" ? "FAIL" : result;
+
+  if (normalizedAttendance === "Absent" && result === "PASS") {
+    const error = new Error("Absent candidates cannot be marked PASS.");
+    error.status = 400;
+    throw error;
+  }
+
   application.status = "In Process";
 
-  application.rounds.push({
+  const existingRound = application.rounds.find(
+    (item) => String(item.roundId) === String(roundId)
+  );
+
+  const roundPayload = {
     roundId,
-    attended,
-    result,
-  });
+    attended: normalizedAttendance === "Present",
+    attendanceStatus: normalizedAttendance,
+    result: normalizedResult,
+  };
+
+  if (existingRound) {
+    existingRound.attended = roundPayload.attended;
+    existingRound.attendanceStatus = roundPayload.attendanceStatus;
+    existingRound.result = roundPayload.result;
+  } else {
+    application.rounds.push(roundPayload);
+  }
 
   if (
-    result === "FAIL" ||
-    (attended === false &&
-      result !== "PENDING")
+    normalizedResult === "FAIL" ||
+    normalizedAttendance === "Absent" ||
+    (attended === false && normalizedResult !== "PENDING")
   ) {
     application.status = "Rejected";
   }
 
-  if (result === "PASS") {
+  if (normalizedResult === "PASS") {
     application.currentRound += 1;
 
     const totalRounds =
@@ -172,6 +201,7 @@ const updateRoundResult =
         roundId,
         attended,
         result,
+        attendanceStatus,
       } = req.body;
 
       const application =
@@ -191,6 +221,7 @@ const updateRoundResult =
         roundId,
         attended,
         result,
+        attendanceStatus,
       });
 
       res.json({
@@ -199,7 +230,7 @@ const updateRoundResult =
       });
       await createAuditLog(req, "Application Updated", "Application", application._id);
     } catch (error) {
-      res.status(500).json({
+      res.status(error.status || 500).json({
         success: false,
         message: error.message,
       });

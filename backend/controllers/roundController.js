@@ -2,6 +2,14 @@ const InterviewRound = require(
   "../models/InterviewRound"
 );
 const Application = require("../models/Application");
+const createAuditLog = require("../utils/audit");
+
+const getAttendanceStatus = (roundResult) => {
+  if (!roundResult) return "Not Marked";
+  if (roundResult.attendanceStatus) return roundResult.attendanceStatus;
+  if (roundResult.attended === false && roundResult.result === "FAIL") return "Absent";
+  return roundResult.attended ? "Present" : "Not Marked";
+};
 
 const createRound = async (
   req,
@@ -16,7 +24,7 @@ const createRound = async (
       round,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -62,7 +70,7 @@ const updateRound = async (
       round,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -83,7 +91,7 @@ const deleteRound = async (
       message: "Round deleted",
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -179,6 +187,7 @@ const getRoundApplications = async (req, res) => {
         currentStatus: application.status,
         result: roundResult?.result || "PENDING",
         attended: roundResult?.attended || false,
+        attendanceStatus: getAttendanceStatus(roundResult),
       };
     });
 
@@ -220,17 +229,27 @@ const applyRoundAction = async (
       (item) =>
         String(item.roundId) === String(round._id)
     );
+
+    if (action === "pass" && getAttendanceStatus(existing) === "Absent") {
+      const error = new Error("Absent candidates cannot be marked PASS. Mark attendance Present first.");
+      error.status = 400;
+      throw error;
+    }
+
     const result =
       action === "pass" ? "PASS" : "FAIL";
-    const attended = action !== "absent";
+    const attendanceStatus = action === "absent" ? "Absent" : "Present";
+    const attended = attendanceStatus === "Present";
 
     if (existing) {
       existing.result = result;
       existing.attended = attended;
+      existing.attendanceStatus = attendanceStatus;
     } else {
       application.rounds.push({
         roundId: round._id,
         attended,
+        attendanceStatus,
         result,
       });
     }
@@ -253,6 +272,153 @@ const applyRoundAction = async (
   }
 
   return applications.length;
+};
+
+const resolveAttendanceApplications = async (round, body) => {
+  const studentIds = body.studentIds || [];
+  const applicationIds = body.applicationIds || [];
+  const filter = {
+    companyId: round.companyId,
+  };
+
+  if (studentIds.length) {
+    filter.studentId = { $in: studentIds };
+  } else {
+    filter._id = { $in: applicationIds };
+  }
+
+  if (!studentIds.length && !applicationIds.length) return [];
+
+  return Application.find(filter);
+};
+
+const applyAttendanceAction = async (req, attendanceStatus) => {
+  const round = await InterviewRound.findById(req.params.roundId);
+
+  if (!round) {
+    const error = new Error("Round not found");
+    error.status = 404;
+    throw error;
+  }
+
+  const applications = await resolveAttendanceApplications(round, req.body);
+
+  for (const application of applications) {
+    let roundEntry = application.rounds.find(
+      (item) => String(item.roundId) === String(round._id)
+    );
+
+    if (!roundEntry) {
+      application.rounds.push({
+        roundId: round._id,
+        attended: false,
+        attendanceStatus: "Not Marked",
+        result: "PENDING",
+      });
+      roundEntry = application.rounds[application.rounds.length - 1];
+    }
+
+    roundEntry.attendanceStatus = attendanceStatus;
+    roundEntry.attended = attendanceStatus === "Present";
+
+    if (attendanceStatus === "Absent") {
+      roundEntry.result = "FAIL";
+      application.status = "Rejected";
+      application.currentRound = round.sequence;
+    }
+
+    if (attendanceStatus === "Not Marked") {
+      roundEntry.result = "PENDING";
+      roundEntry.attended = false;
+    }
+
+    await application.save();
+  }
+
+  return applications.length;
+};
+
+const markAttendancePresent = async (req, res) => {
+  try {
+    const updated = await applyAttendanceAction(req, "Present");
+    await createAuditLog(req, "Attendance Marked Present", "InterviewRound", req.params.roundId, {
+      updated,
+    });
+    res.json({ success: true, updated });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const markAttendanceAbsent = async (req, res) => {
+  try {
+    const updated = await applyAttendanceAction(req, "Absent");
+    await createAuditLog(req, "Attendance Marked Absent", "InterviewRound", req.params.roundId, {
+      updated,
+    });
+    res.json({ success: true, updated });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const clearAttendance = async (req, res) => {
+  try {
+    const updated = await applyAttendanceAction(req, "Not Marked");
+    await createAuditLog(req, "Attendance Cleared", "InterviewRound", req.params.roundId, {
+      updated,
+    });
+    res.json({ success: true, updated });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getAttendanceAnalyticsByCompany = async (req, res) => {
+  try {
+    const rounds = await InterviewRound.find({
+      companyId: req.params.companyId,
+    }).sort({ sequence: 1 });
+    const applications = await Application.find({
+      companyId: req.params.companyId,
+    });
+
+    const analytics = rounds.map((round) => {
+      const entries = applications
+        .map((application) =>
+          application.rounds.find((item) => String(item.roundId) === String(round._id))
+        )
+        .filter(Boolean);
+      const present = entries.filter((entry) => getAttendanceStatus(entry) === "Present").length;
+      const absent = entries.filter((entry) => getAttendanceStatus(entry) === "Absent").length;
+      const total = present + absent;
+
+      return {
+        _id: round._id,
+        roundName: round.roundName,
+        total,
+        present,
+        absent,
+        attendanceRate: total ? Math.round((present / total) * 100) : 0,
+      };
+    });
+
+    res.json({ success: true, analytics });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 const bulkPassRound = async (req, res) => {
@@ -316,4 +482,8 @@ module.exports = {
   bulkPassRound,
   bulkRejectRound,
   bulkAbsentRound,
+  markAttendancePresent,
+  markAttendanceAbsent,
+  clearAttendance,
+  getAttendanceAnalyticsByCompany,
 };

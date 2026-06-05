@@ -11,6 +11,7 @@ const {
   importStudents,
   uploadResume,
   getResume,
+  getResumeFile,
   verifyResume,
   rejectResume,
   deleteResume,
@@ -37,6 +38,8 @@ router.post(
   resumeUpload.single("resume"),
   uploadResume
 );
+
+router.get("/:id/resume/file", getResumeFile);
 
 router.get("/:id/resume", getResume);
 

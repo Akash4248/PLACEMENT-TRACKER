@@ -148,17 +148,25 @@ export default function StudentsPage() {
   };
 
   const viewResume = async (student) => {
-    const { data: response } = await studentsApi.resume(student._id);
-    window.open(response.resumeUrl, "_blank", "noopener,noreferrer");
+    const { data: file } = await studentsApi.resumeFile(student._id);
+    const fileUrl = URL.createObjectURL(file);
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+    setTimeout(() => URL.revokeObjectURL(fileUrl), 60_000);
   };
 
   const downloadResume = async (student) => {
-    const { data: response } = await studentsApi.resume(student._id);
+    const [{ data: response }, { data: file }] = await Promise.all([
+      studentsApi.resume(student._id),
+      studentsApi.resumeFile(student._id, true),
+    ]);
+    const fileUrl = URL.createObjectURL(file);
     const link = document.createElement("a");
-    link.href = response.resumeUrl;
+    link.href = fileUrl;
     link.download = response.resumeFileName || `${student.usn}-resume`;
-    link.target = "_blank";
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+    URL.revokeObjectURL(fileUrl);
   };
 
   const deleteResume = async (student) => {

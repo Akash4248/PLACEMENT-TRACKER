@@ -2,6 +2,12 @@ const Student = require("../models/Student");
 const Company = require("../models/Company");
 const Application = require("../models/Application");
 
+const normalizeAttendanceStatus = (round) => {
+  if (round.attendanceStatus) return round.attendanceStatus;
+  if (round.attended === false && round.result === "FAIL") return "Absent";
+  return round.attended ? "Present" : "Not Marked";
+};
+
 const getDashboardStats = async (
   req,
   res
@@ -262,10 +268,44 @@ const getRecruitmentFunnel = async (
   }
 };
 
+const getAttendanceAnalytics = async (req, res) => {
+  try {
+    const applications = await Application.find().select("rounds");
+    const attendanceRecords = applications.flatMap((application) =>
+      application.rounds.filter((round) => normalizeAttendanceStatus(round) !== "Not Marked")
+    );
+    const present = attendanceRecords.filter(
+      (round) => normalizeAttendanceStatus(round) === "Present"
+    ).length;
+    const absent = attendanceRecords.filter(
+      (round) => normalizeAttendanceStatus(round) === "Absent"
+    ).length;
+    const totalCandidates = present + absent;
+
+    res.json({
+      success: true,
+      attendance: {
+        totalCandidates,
+        present,
+        absent,
+        attendanceRate: totalCandidates
+          ? Math.round((present / totalCandidates) * 100)
+          : 0,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
   
 module.exports = {
   getDashboardStats,
   getCompanyAnalytics,
   getDepartmentAnalytics,
   getRecruitmentFunnel,
+  getAttendanceAnalytics,
 };

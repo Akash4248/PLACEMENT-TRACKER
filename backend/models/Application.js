@@ -43,6 +43,12 @@ const applicationSchema = new mongoose.Schema(
           default: false,
         },
 
+        attendanceStatus: {
+          type: String,
+          enum: ["Present", "Absent", "Not Marked"],
+          default: "Not Marked",
+        },
+
         result: {
           type: String,
           enum: ["PASS", "FAIL", "PENDING"],

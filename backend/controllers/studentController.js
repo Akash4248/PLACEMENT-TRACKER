@@ -1,5 +1,7 @@
 const Student = require("../models/Student");
 const fs = require("fs");
+const https = require("https");
+const path = require("path");
 const { parseSpreadsheet } = require("../utils/fileParser");
 const {
   cloudinary,
@@ -25,6 +27,29 @@ const getProfileStrength = (student) => {
 const getPublicBaseUrl = (req) =>
   process.env.BACKEND_PUBLIC_URL ||
   `${req.protocol}://${req.get("host")}`;
+
+const getResumeContentType = (fileName = "") => {
+  const extension = path.extname(fileName).toLowerCase();
+
+  if (extension === ".pdf") return "application/pdf";
+  if (extension === ".doc") return "application/msword";
+  if (extension === ".docx") {
+    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  }
+
+  return "application/octet-stream";
+};
+
+const getLocalResumePath = (resumeUrl = "") => {
+  const marker = "/uploads/resumes/";
+  const markerIndex = resumeUrl.indexOf(marker);
+
+  if (markerIndex === -1) return null;
+
+  const fileName = decodeURIComponent(resumeUrl.slice(markerIndex + marker.length));
+  const safeFileName = path.basename(fileName);
+  return path.join(__dirname, "..", "uploads", "resumes", safeFileName);
+};
 
 const withProfileStrength = (student) => ({
   ...student.toObject(),
@@ -258,6 +283,76 @@ const getResume = async (req, res) => {
       resumeUrl: student.resumeUrl,
       resumeFileName: student.resumeFileName,
       resumeStatus: student.resumeStatus,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const streamRemoteResume = (url, res, fileName, disposition) => {
+  https
+    .get(url, (remoteResponse) => {
+      if (
+        remoteResponse.statusCode >= 300 &&
+        remoteResponse.statusCode < 400 &&
+        remoteResponse.headers.location
+      ) {
+        streamRemoteResume(remoteResponse.headers.location, res, fileName, disposition);
+        return;
+      }
+
+      if (remoteResponse.statusCode !== 200) {
+        res.status(502).json({
+          success: false,
+          message: "Unable to fetch resume from storage",
+        });
+        return;
+      }
+
+      res.setHeader("Content-Type", remoteResponse.headers["content-type"] || getResumeContentType(fileName));
+      res.setHeader("Content-Disposition", `${disposition}; filename="${fileName}"`);
+      remoteResponse.pipe(res);
+    })
+    .on("error", (error) => {
+      res.status(502).json({
+        success: false,
+        message: error.message,
+      });
+    });
+};
+
+const getResumeFile = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+
+    if (!student || !student.resumeUrl) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+    const fileName = student.resumeFileName || `${student.usn || "student"}-resume`;
+    const disposition = req.query.download === "true" ? "attachment" : "inline";
+    const localPath = getLocalResumePath(student.resumeUrl);
+
+    if (localPath && fs.existsSync(localPath)) {
+      res.setHeader("Content-Type", getResumeContentType(fileName));
+      res.setHeader("Content-Disposition", `${disposition}; filename="${fileName}"`);
+      return res.sendFile(localPath);
+    }
+
+    if (/^https:\/\//i.test(student.resumeUrl)) {
+      streamRemoteResume(student.resumeUrl, res, fileName, disposition);
+      return;
+    }
+
+    res.status(404).json({
+      success: false,
+      message: "Resume file is not available on this server",
     });
   } catch (error) {
     res.status(500).json({
@@ -583,6 +678,7 @@ module.exports = {
   importStudents,
   uploadResume,
   getResume,
+  getResumeFile,
   verifyResume,
   rejectResume,
   deleteResume,

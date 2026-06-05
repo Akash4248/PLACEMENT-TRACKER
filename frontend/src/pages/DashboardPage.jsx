@@ -14,7 +14,7 @@ import {
   YAxis,
 } from "recharts";
 import { motion } from "framer-motion";
-import { FiBriefcase, FiCheckCircle, FiFileText, FiGift, FiTrendingUp, FiUsers, FiXCircle } from "react-icons/fi";
+import { FiBriefcase, FiCheckCircle, FiFileText, FiGift, FiTrendingUp, FiUserCheck, FiUsers, FiXCircle } from "react-icons/fi";
 import { companiesApi, dashboardApi } from "../api/services";
 import Card from "../components/ui/Card";
 import PageHeader from "../components/ui/PageHeader";
@@ -61,12 +61,14 @@ export default function DashboardPage() {
       analyticsResponse,
       departmentResponse,
       funnelResponse,
+      attendanceResponse,
       companiesResponse,
     ] = await Promise.all([
       dashboardApi.stats(),
       dashboardApi.companyAnalytics(),
       dashboardApi.departmentAnalytics(),
       dashboardApi.funnel(),
+      dashboardApi.attendance(),
       companiesApi.list(),
     ]);
 
@@ -74,6 +76,7 @@ export default function DashboardPage() {
       analytics: analyticsResponse.data.analytics || [],
       departmentAnalytics: departmentResponse.data.analytics || [],
       funnel: funnelResponse.data.funnel || {},
+      attendance: attendanceResponse.data.attendance || {},
       companies: companiesResponse.data.companies || [],
       stats: statsResponse.data.stats || {},
     };
@@ -83,6 +86,7 @@ export default function DashboardPage() {
   if (error) return <ErrorState message={error} onRetry={refresh} />;
 
   const stats = data.stats;
+  const attendance = data.attendance;
   const chartData = data.analytics.map((item, index) => ({
     company: item.companyName || `Company ${index + 1}`,
     selected: item.selected,
@@ -124,7 +128,33 @@ export default function DashboardPage() {
         <KpiCard icon={FiGift} label="Offers" trend="Finalized" value={stats.offerReceived} />
         <KpiCard icon={FiBriefcase} label="Upcoming Drives" trend="Scheduled" value={upcomingDrives.length} />
         <KpiCard icon={FiTrendingUp} label="Active Recruitments" trend="Open" value={activeRecruitments} />
+        <KpiCard icon={FiUserCheck} label="Attendance Rate" trend={`${attendance.present || 0} present / ${attendance.absent || 0} absent`} value={`${attendance.attendanceRate || 0}%`} />
       </div>
+
+      <Card className="mt-6 p-5">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-lg font-semibold text-ink">Attendance Summary</h2>
+            <p className="mt-1 text-sm text-muted">Interview attendance marked across all rounds.</p>
+          </div>
+          <div className="text-left md:text-right">
+            <p className="text-3xl font-bold text-primary">{attendance.attendanceRate || 0}%</p>
+            <p className="text-sm text-muted">Attendance Rate</p>
+          </div>
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {[
+            ["Total Attendance Records", attendance.totalCandidates || 0],
+            ["Present Candidates", attendance.present || 0],
+            ["Absent Candidates", attendance.absent || 0],
+          ].map(([label, value]) => (
+            <div className="rounded-xl border border-border bg-slate-50 p-4" key={label}>
+              <p className="text-2xl font-bold text-ink">{value}</p>
+              <p className="mt-1 text-sm text-muted">{label}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
         <Card className="p-5">

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import { roundsApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -31,9 +32,31 @@ export default function RoundDetailPage() {
   const runBulk = async (action) => {
     const ids = Array.from(selectedIds);
     if (!ids.length) return;
-    await action(roundId, ids);
-    setSelectedIds(new Set());
-    refresh();
+
+    try {
+      await action(roundId, ids);
+      setSelectedIds(new Set());
+      refresh();
+    } catch (err) {
+      toast.error(err.message || "Unable to update round result");
+    }
+  };
+
+  const runAttendanceBulk = async (action) => {
+    const studentIds = rows
+      .filter((row) => selectedIds.has(row._id) && row.student?._id)
+      .map((row) => row.student._id);
+
+    if (!studentIds.length) return;
+
+    try {
+      const { data: response } = await action(roundId, studentIds);
+      toast.success(`Attendance updated for ${response.updated || studentIds.length} candidates`);
+      setSelectedIds(new Set());
+      refresh();
+    } catch (err) {
+      toast.error(err.message || "Unable to update attendance");
+    }
   };
 
   const columns = useMemo(() => [
@@ -48,6 +71,7 @@ export default function RoundDetailPage() {
     { key: "name", header: "Name", render: (row) => row.student?.name || "-" },
     { key: "department", header: "Department", render: (row) => row.student?.department || "-" },
     { key: "status", header: "Current Status", render: (row) => <Badge label={row.currentStatus} /> },
+    { key: "attendanceStatus", header: "Attendance", render: (row) => <Badge label={row.attendanceStatus || "Not Marked"} /> },
     { key: "result", header: "Result", render: (row) => <Badge label={row.result} /> },
   ], [selectedIds]);
 
@@ -64,6 +88,9 @@ export default function RoundDetailPage() {
         <div className="sticky top-20 z-20 mb-4 flex flex-col gap-3 rounded-2xl border border-border bg-white p-3 shadow-lift sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold text-ink">{selectedCount} selected</p>
           <div className="flex flex-wrap gap-2">
+            <Button onClick={() => runAttendanceBulk(roundsApi.markPresent)} size="sm" variant="secondary">Mark Present</Button>
+            <Button onClick={() => runAttendanceBulk(roundsApi.markAbsent)} size="sm" variant="secondary">Mark Absent</Button>
+            <Button onClick={() => runAttendanceBulk(roundsApi.clearAttendance)} size="sm" variant="secondary">Clear Attendance</Button>
             <Button onClick={() => runBulk(roundsApi.bulkPass)} size="sm" variant="secondary">Pass Selected</Button>
             <Button onClick={() => runBulk(roundsApi.bulkReject)} size="sm" variant="secondary">Reject Selected</Button>
             <Button onClick={() => runBulk(roundsApi.bulkAbsent)} size="sm" variant="danger">Mark Absent</Button>

@@ -11,10 +11,11 @@ const percent = (numerator, denominator) =>
   denominator ? Math.round((numerator / denominator) * 100) : 0;
 
 const getPlacementAnalyticsData = async () => {
-  const [students, companies, applications] = await Promise.all([
+  const [students, companies, applications, rounds] = await Promise.all([
     Student.find(),
     Company.find(),
     Application.find().populate("studentId").populate("companyId"),
+    InterviewRound.find().populate("companyId").sort({ sequence: 1 }),
   ]);
 
   const selectedApplications = applications.filter(
@@ -118,6 +119,51 @@ const getPlacementAnalyticsData = async () => {
     selected: selectedApplications.length,
   };
 
+  const getAttendanceStatus = (roundEntry) => {
+    if (roundEntry.attendanceStatus) return roundEntry.attendanceStatus;
+    if (roundEntry.attended === false && roundEntry.result === "FAIL") return "Absent";
+    return roundEntry.attended ? "Present" : "Not Marked";
+  };
+  const attendanceEntries = applications.flatMap((application) =>
+    (application.rounds || [])
+      .filter((roundEntry) => getAttendanceStatus(roundEntry) !== "Not Marked")
+      .map((roundEntry) => {
+        const plainEntry = roundEntry.toObject?.() || roundEntry;
+        return {
+          ...plainEntry,
+          companyId: application.companyId?._id,
+        };
+      })
+  );
+  const attendancePresent = attendanceEntries.filter(
+    (entry) => getAttendanceStatus(entry) === "Present"
+  ).length;
+  const attendanceAbsent = attendanceEntries.filter(
+    (entry) => getAttendanceStatus(entry) === "Absent"
+  ).length;
+  const attendanceTotal = attendancePresent + attendanceAbsent;
+  const attendanceAnalytics = rounds.map((round) => {
+    const roundEntries = attendanceEntries.filter(
+      (entry) => String(entry.roundId) === String(round._id)
+    );
+    const present = roundEntries.filter(
+      (entry) => getAttendanceStatus(entry) === "Present"
+    ).length;
+    const absent = roundEntries.filter(
+      (entry) => getAttendanceStatus(entry) === "Absent"
+    ).length;
+    const total = present + absent;
+
+    return {
+      companyName: round.companyId?.companyName || "Unknown",
+      roundName: round.roundName,
+      total,
+      present,
+      absent,
+      attendanceRate: percent(present, total),
+    };
+  });
+
   return {
     metadata: {
       reportName: "CampusTrack Placement Analytics",
@@ -133,9 +179,14 @@ const getPlacementAnalyticsData = async () => {
       offers: offerApplications.length,
       selectionRate: percent(selectedApplications.length, applications.length),
       offerRate: percent(offerApplications.length, applications.length),
+      attendanceRecords: attendanceTotal,
+      present: attendancePresent,
+      absent: attendanceAbsent,
+      attendanceRate: percent(attendancePresent, attendanceTotal),
     },
     departmentAnalytics,
     companyAnalytics,
+    attendanceAnalytics,
     funnel,
   };
 };
@@ -337,6 +388,9 @@ const sendPdf = (res, filename, title, data, sections = {}) => {
     ["Offers", data.executiveSummary.offers],
     ["Selection Rate", `${data.executiveSummary.selectionRate}%`],
     ["Offer Rate", `${data.executiveSummary.offerRate}%`],
+    ["Attendance Rate", `${data.executiveSummary.attendanceRate || 0}%`],
+    ["Present", data.executiveSummary.present || 0],
+    ["Absent", data.executiveSummary.absent || 0],
   ]);
 
   if (sections.department !== false) {
@@ -387,6 +441,23 @@ const sendPdf = (res, filename, title, data, sections = {}) => {
       ],
       [360, 147],
       { limit: 10 }
+    );
+  }
+
+  if (sections.attendance !== false) {
+    drawSection(doc, "Round Attendance Analytics");
+    drawTable(
+      doc,
+      ["Company", "Round", "Total", "Present", "Absent", "Rate"],
+      (data.attendanceAnalytics || []).map((item) => [
+        item.companyName,
+        item.roundName,
+        item.total,
+        item.present,
+        item.absent,
+        `${item.attendanceRate}%`,
+      ]),
+      [142, 116, 58, 65, 65, 56]
     );
   }
 
@@ -448,6 +519,7 @@ const sendXlsx = async (res, data) => {
   );
   addWorksheet(workbook, "Department Analytics", data.departmentAnalytics);
   addWorksheet(workbook, "Company Analytics", data.companyAnalytics);
+  addWorksheet(workbook, "Attendance Analytics", data.attendanceAnalytics || []);
   addWorksheet(workbook, "Recruitment Funnel", [data.funnel]);
 
   res.setHeader(

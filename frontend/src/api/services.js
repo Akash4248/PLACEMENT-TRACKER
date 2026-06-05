@@ -11,6 +11,7 @@ export const dashboardApi = {
   companyAnalytics: () => apiClient.get("/dashboard/company-analytics"),
   departmentAnalytics: () => apiClient.get("/dashboard/department-analytics"),
   funnel: () => apiClient.get("/dashboard/funnel"),
+  attendance: () => apiClient.get("/dashboard/attendance"),
 };
 
 export const studentsApi = {
@@ -19,6 +20,11 @@ export const studentsApi = {
   update: (id, payload) => apiClient.put(`/students/${id}`, payload),
   remove: (id) => apiClient.delete(`/students/${id}`),
   resume: (id) => apiClient.get(`/students/${id}/resume`),
+  resumeFile: (id, download = false) =>
+    apiClient.get(`/students/${id}/resume/file`, {
+      params: { download },
+      responseType: "blob",
+    }),
   deleteResume: (id) => apiClient.delete(`/students/${id}/resume`),
   uploadResume: (id, file, onUploadProgress) => {
     const formData = new FormData();
@@ -76,10 +82,14 @@ export const applicationsApi = {
 export const roundsApi = {
   byCompany: (companyId) => apiClient.get(`/rounds/company/${companyId}`),
   analyticsByCompany: (companyId) => apiClient.get(`/rounds/company/${companyId}/analytics`),
+  attendanceByCompany: (companyId) => apiClient.get(`/rounds/company/${companyId}/attendance`),
   applications: (roundId) => apiClient.get(`/rounds/${roundId}/applications`),
   bulkPass: (roundId, applicationIds) => apiClient.post(`/rounds/${roundId}/bulk-pass`, { applicationIds }),
   bulkReject: (roundId, applicationIds) => apiClient.post(`/rounds/${roundId}/bulk-reject`, { applicationIds }),
   bulkAbsent: (roundId, applicationIds) => apiClient.post(`/rounds/${roundId}/bulk-absent`, { applicationIds }),
+  markPresent: (roundId, studentIds) => apiClient.post(`/rounds/${roundId}/attendance/present`, { studentIds }),
+  markAbsent: (roundId, studentIds) => apiClient.post(`/rounds/${roundId}/attendance/absent`, { studentIds }),
+  clearAttendance: (roundId, studentIds) => apiClient.post(`/rounds/${roundId}/attendance/clear`, { studentIds }),
   create: (payload) => apiClient.post("/rounds", payload),
   update: (id, payload) => apiClient.put(`/rounds/${id}`, payload),
   remove: (id) => apiClient.delete(`/rounds/${id}`),

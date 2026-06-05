@@ -13,7 +13,7 @@ import {
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { FiDownload, FiEye } from "react-icons/fi";
-import { companiesApi } from "../api/services";
+import { companiesApi, roundsApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -29,15 +29,17 @@ export default function CompanyAnalyticsPage() {
   const [shortlistOpen, setShortlistOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const { data, error, loading, refresh } = useAsync(async () => {
-    const [analyticsResponse, funnelResponse, shortlistResponse] = await Promise.all([
+    const [analyticsResponse, funnelResponse, shortlistResponse, attendanceResponse] = await Promise.all([
       companiesApi.analytics(companyId),
       companiesApi.funnel(companyId),
       companiesApi.shortlist(companyId),
+      roundsApi.attendanceByCompany(companyId),
     ]);
     return {
       ...analyticsResponse.data,
       funnel: funnelResponse.data.funnel || {},
       shortlist: shortlistResponse.data,
+      attendance: attendanceResponse.data.analytics || [],
     };
   }, [companyId]);
 
@@ -48,6 +50,17 @@ export default function CompanyAnalyticsPage() {
   const metrics = data.metrics || {};
   const shortlistSummary = data.shortlist?.summary || {};
   const shortlistedStudents = data.shortlist?.students || [];
+  const attendanceTotals = (data.attendance || []).reduce(
+    (acc, item) => ({
+      total: acc.total + (item.total || 0),
+      present: acc.present + (item.present || 0),
+      absent: acc.absent + (item.absent || 0),
+    }),
+    { total: 0, present: 0, absent: 0 }
+  );
+  const attendanceRate = attendanceTotals.total
+    ? Math.round((attendanceTotals.present / attendanceTotals.total) * 100)
+    : 0;
   const funnelData = [
     { name: "Applied", value: data.funnel.applied || 0, fill: "#2563EB" },
     { name: "Aptitude", value: data.funnel.aptitude || 0, fill: "#3B82F6" },
@@ -133,11 +146,12 @@ export default function CompanyAnalyticsPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
         {[
           ["Applicants", metrics.applicants],
+          ["Present", attendanceTotals.present],
+          ["Absent", attendanceTotals.absent],
+          ["Attendance %", `${attendanceRate}%`],
           ["Selected", metrics.selected],
           ["Rejected", metrics.rejected],
           ["Offers", metrics.offers],
-          ["Selection Rate", `${metrics.selectionRate || 0}%`],
-          ["Status", company.status],
         ].map(([label, value]) => (
           <Card className="p-5" key={label}>
             <p className="text-2xl font-bold text-ink">{value}</p>
@@ -174,6 +188,19 @@ export default function CompanyAnalyticsPage() {
             </ResponsiveContainer>
           </div>
         </Card>
+      </div>
+      <div className="mt-6">
+        <DataTable
+          columns={[
+            { key: "roundName", header: "Round" },
+            { key: "total", header: "Applicants" },
+            { key: "present", header: "Present" },
+            { key: "absent", header: "Absent" },
+            { key: "attendanceRate", header: "Attendance %", render: (row) => <Badge label={`${row.attendanceRate}%`} /> },
+          ]}
+          empty={{ title: "No attendance data", description: "Mark attendance from round details to populate this table." }}
+          rows={(data.attendance || []).map((row) => ({ ...row, _id: row._id || row.roundName }))}
+        />
       </div>
       <div className="mt-6">
         <DataTable
