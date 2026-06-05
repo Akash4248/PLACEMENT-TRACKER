@@ -9,12 +9,14 @@ import DataTable from "../components/ui/DataTable";
 import FormField, { inputClass } from "../components/ui/FormField";
 import Modal from "../components/ui/Modal";
 import PageHeader from "../components/ui/PageHeader";
+import Pagination from "../components/ui/Pagination";
 import { ErrorState, LoadingState } from "../components/ui/StateBlock";
 import UploadPreviewModal from "../components/ui/UploadPreviewModal";
 import useAsync from "../hooks/useAsync";
 
 function StudentForm({ initialValues, onCancel, onSaved }) {
   const [error, setError] = useState("");
+  const [resumeFile, setResumeFile] = useState(null);
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -42,13 +44,23 @@ function StudentForm({ initialValues, onCancel, onSaved }) {
     };
 
     try {
+      let savedStudent;
+
       if (initialValues?._id) {
-        await studentsApi.update(initialValues._id, payload);
+        const { data: response } = await studentsApi.update(initialValues._id, payload);
+        savedStudent = response.student;
         toast.success("Student updated");
       } else {
-        await studentsApi.create(payload);
+        const { data: response } = await studentsApi.create(payload);
+        savedStudent = response.student;
         toast.success("Student created");
       }
+
+      if (resumeFile && savedStudent?._id) {
+        await studentsApi.uploadResume(savedStudent._id, resumeFile);
+        toast.success("Resume uploaded");
+      }
+
       onSaved();
     } catch (err) {
       setError(err.message);
@@ -84,6 +96,14 @@ function StudentForm({ initialValues, onCancel, onSaved }) {
           <input className={inputClass} placeholder="React, Java, SQL" {...register("skills")} />
         </FormField>
       </div>
+      <FormField label="Resume">
+        <input
+          accept=".pdf,.doc,.docx"
+          className={inputClass}
+          onChange={(event) => setResumeFile(event.target.files?.[0] || null)}
+          type="file"
+        />
+      </FormField>
       <div className="flex justify-end gap-3 pt-2">
         <Button onClick={onCancel} type="button" variant="secondary">Cancel</Button>
         <Button loading={isSubmitting} type="submit">{initialValues?._id ? "Save Changes" : "Add Student"}</Button>
@@ -94,14 +114,30 @@ function StudentForm({ initialValues, onCancel, onSaved }) {
 
 export default function StudentsPage() {
   const [query, setQuery] = useState("");
+  const [department, setDepartment] = useState("");
+  const [graduationYear, setGraduationYear] = useState("");
+  const [minCGPA, setMinCGPA] = useState("");
+  const [maxCGPA, setMaxCGPA] = useState("");
+  const [resumeStatus, setResumeStatus] = useState("");
+  const [page, setPage] = useState(1);
   const [editing, setEditing] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [importSummary, setImportSummary] = useState(null);
+  const pageSize = 20;
   const { data, error, loading, refresh } = useAsync(async () => {
-    const { data: response } = await studentsApi.list({ search: query });
-    return response.students || [];
-  }, [query]);
+    const { data: response } = await studentsApi.list({
+      search: query || undefined,
+      department: department || undefined,
+      graduationYear: graduationYear || undefined,
+      minCGPA: minCGPA || undefined,
+      maxCGPA: maxCGPA || undefined,
+      resumeStatus: resumeStatus || undefined,
+      page,
+      limit: pageSize,
+    });
+    return response;
+  }, [query, department, graduationYear, minCGPA, maxCGPA, resumeStatus, page]);
 
   const uploadResume = async (student, file) => {
     if (!file) return;
@@ -125,7 +161,13 @@ export default function StudentsPage() {
     link.click();
   };
 
-  const rows = data || [];
+  const deleteResume = async (student) => {
+    await studentsApi.deleteResume(student._id);
+    toast.success("Resume deleted");
+    refresh();
+  };
+
+  const rows = data?.students || [];
   const columns = useMemo(() => [
     { key: "usn", header: "USN" },
     { key: "name", header: "Name", render: (row) => <div><p className="font-semibold">{row.name}</p><p className="text-xs text-muted">{row.phone || "No phone"}</p></div> },
@@ -158,6 +200,7 @@ export default function StudentsPage() {
           </label>
           <Button disabled={!row.resumeUrl} onClick={() => viewResume(row)} size="sm" variant="secondary"><FiEye /></Button>
           <Button disabled={!row.resumeUrl} onClick={() => downloadResume(row)} size="sm" variant="secondary"><FiDownload /></Button>
+          <Button disabled={!row.resumeUrl} onClick={() => deleteResume(row)} size="sm" variant="secondary"><FiTrash2 /></Button>
           <Button disabled={!row.resumeUrl} onClick={async () => { await studentsApi.verifyResume(row._id); toast.success("Resume verified"); refresh(); }} size="sm" variant="secondary"><FiCheckCircle className="text-success" /></Button>
           <Button disabled={!row.resumeUrl} onClick={async () => { await studentsApi.rejectResume(row._id); toast.success("Resume rejected"); refresh(); }} size="sm" variant="secondary"><FiXCircle className="text-danger" /></Button>
           <Button onClick={() => { setEditing({ ...row, skills: row.skills?.join(", ") || "" }); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
@@ -184,9 +227,28 @@ export default function StudentsPage() {
       />
       <div className="mb-4 flex h-11 max-w-md items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
         <FiSearch className="h-4 w-4 text-muted" />
-        <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => setQuery(event.target.value)} placeholder="Search student" value={query} />
+        <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => { setPage(1); setQuery(event.target.value); }} placeholder="Search student" value={query} />
+      </div>
+      <div className="mb-4 grid gap-3 md:grid-cols-5">
+        <input className={inputClass} onChange={(event) => { setPage(1); setDepartment(event.target.value); }} placeholder="Department" value={department} />
+        <input className={inputClass} onChange={(event) => { setPage(1); setGraduationYear(event.target.value); }} placeholder="Graduation year" type="number" value={graduationYear} />
+        <input className={inputClass} onChange={(event) => { setPage(1); setMinCGPA(event.target.value); }} placeholder="Min CGPA" step="0.1" type="number" value={minCGPA} />
+        <input className={inputClass} onChange={(event) => { setPage(1); setMaxCGPA(event.target.value); }} placeholder="Max CGPA" step="0.1" type="number" value={maxCGPA} />
+        <select className={inputClass} onChange={(event) => { setPage(1); setResumeStatus(event.target.value); }} value={resumeStatus}>
+          <option value="">All resume statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Verified">Verified</option>
+          <option value="Rejected">Rejected</option>
+        </select>
       </div>
       <DataTable columns={columns} empty={{ title: "No students yet", description: "Add student records to start tracking applications." }} rows={rows} />
+      <Pagination
+        currentPage={data?.currentPage || page}
+        onPageChange={setPage}
+        pageSize={pageSize}
+        totalPages={data?.totalPages || 1}
+        totalRecords={data?.totalRecords || 0}
+      />
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Edit Student" : "Add Student"}>
         <StudentForm initialValues={editing} onCancel={() => setModalOpen(false)} onSaved={() => { setModalOpen(false); refresh(); }} />
       </Modal>

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { FiActivity, FiAlertCircle, FiClock, FiDatabase, FiServer } from "react-icons/fi";
 import apiClient from "../api/client";
+import { auditApi } from "../api/services";
 import Card from "../components/ui/Card";
+import DataTable from "../components/ui/DataTable";
 import PageHeader from "../components/ui/PageHeader";
 import { ErrorState, LoadingState } from "../components/ui/StateBlock";
 
@@ -26,6 +28,8 @@ export default function AdminSystemPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [latency, setLatency] = useState(null);
+  const [logs, setLogs] = useState([]);
+  const [logError, setLogError] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -33,9 +37,22 @@ export default function AdminSystemPage() {
     const start = performance.now();
 
     try {
-      const response = await apiClient.get("/system");
+      const [response, logsResponse] = await Promise.allSettled([
+        apiClient.get("/system"),
+        auditApi.list({ limit: 25 }),
+      ]);
+
+      if (response.status === "rejected") throw response.reason;
+
       setLatency(Math.round(performance.now() - start));
-      setData(response.data);
+      setData(response.value.data);
+      if (logsResponse.status === "fulfilled") {
+        setLogs(logsResponse.value.data.logs || []);
+        setLogError("");
+      } else {
+        setLogs([]);
+        setLogError(logsResponse.reason?.message || "Unable to load activity feed");
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -66,6 +83,26 @@ export default function AdminSystemPage() {
         <Metric icon={FiServer} label="Environment" value={data.environment} />
         <Metric icon={FiClock} label="Last Request" value={data.lastRequestAt ? new Date(data.lastRequestAt).toLocaleTimeString() : "-"} />
       </div>
+      <Card className="mt-6 p-5">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-ink">Admin Activity Feed</h2>
+          <p className="mt-1 text-sm text-muted">Recent write actions captured by the backend audit trail.</p>
+        </div>
+        {logError ? (
+          <div className="rounded-xl bg-amber-50 px-4 py-3 text-sm font-medium text-amber-700">{logError}</div>
+        ) : (
+          <DataTable
+            columns={[
+              { key: "createdAt", header: "Time", render: (row) => new Date(row.createdAt).toLocaleString() },
+              { key: "action", header: "Action" },
+              { key: "entity", header: "Entity" },
+              { key: "user", header: "User", render: (row) => row.user?.email || row.user?.name || "System" },
+            ]}
+            empty={{ title: "No activity yet", description: "Create, update, import, or upload records to populate the activity feed." }}
+            rows={logs}
+          />
+        )}
+      </Card>
     </>
   );
 }

@@ -12,6 +12,7 @@ const applicationRoutes = require("./routes/applicationRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const settingsRoutes = require("./routes/settingsRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const auditRoutes = require("./routes/auditRoutes");
 const systemRoutes = require("./routes/systemRoutes");
 const errorLogger = require("./middleware/errorLogger");
 const { requestStats } = require("./middleware/requestStats");
@@ -86,6 +87,7 @@ app.use(
 );
 app.use("/api/settings", settingsRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/audit-logs", auditRoutes);
 
 app.use(errorLogger);
 

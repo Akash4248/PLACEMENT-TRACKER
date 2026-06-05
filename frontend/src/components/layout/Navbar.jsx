@@ -1,10 +1,12 @@
-import { FiLogOut, FiMenu, FiSearch } from "react-icons/fi";
+import { FiLogOut, FiMenu, FiMoon, FiSearch, FiSun } from "react-icons/fi";
 import Button from "../ui/Button";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import { getInitials } from "../../utils/formatters";
 
 export default function Navbar({ onOpenSidebar }) {
   const { logout, user } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-white/95 px-4 backdrop-blur sm:px-6">
@@ -24,6 +26,9 @@ export default function Navbar({ onOpenSidebar }) {
         </div>
       </div>
       <div className="flex items-center gap-3">
+        <Button aria-label="Toggle dark mode" onClick={toggleTheme} size="sm" variant="ghost">
+          {isDark ? <FiSun className="h-4 w-4" /> : <FiMoon className="h-4 w-4" />}
+        </Button>
         <div className="hidden text-right sm:block">
           <p className="text-sm font-semibold text-ink">{user?.name || "Placement Officer"}</p>
           <p className="text-xs capitalize text-muted">{user?.role || "admin"}</p>

@@ -1,61 +1,33 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useMemo } from "react";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+
+const normalizePart = (part) => {
+  if (part === undefined) return "undefined";
+  if (part === null) return "null";
+  if (typeof part === "object") return JSON.stringify(part);
+  return part;
+};
 
 export default function useAsync(loader, deps = []) {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [refreshError, setRefreshError] = useState("");
-  const hasLoadedRef = useRef(false);
+  const queryClient = useQueryClient();
+  const queryKey = useMemo(
+    () => ["campustrack", loader.toString(), ...deps.map(normalizePart)],
+    deps
+  );
 
-  const run = useCallback(async () => {
-    const isInitialLoad = !hasLoadedRef.current;
-
-    if (isInitialLoad) {
-      setLoading(true);
-      setError("");
-    } else {
-      setRefreshing(true);
-      setRefreshError("");
-    }
-
-    try {
-      const result = await loader();
-      setData(result);
-      hasLoadedRef.current = true;
-      setError("");
-      setRefreshError("");
-      return result;
-    } catch (err) {
-      const message = err.message || "Unable to load data";
-
-      if (isInitialLoad) {
-        setError(message);
-      } else {
-        setRefreshError(message);
-      }
-
-      return null;
-    } finally {
-      if (isInitialLoad) {
-        setLoading(false);
-      } else {
-        setRefreshing(false);
-      }
-    }
-  }, deps);
-
-  useEffect(() => {
-    run();
-  }, [run]);
+  const query = useQuery({
+    queryKey,
+    queryFn: loader,
+    placeholderData: keepPreviousData,
+  });
 
   return {
-    data,
-    error,
-    loading,
-    refresh: run,
-    refreshing,
-    refreshError,
-    setData,
+    data: query.data ?? null,
+    error: query.error?.message || "",
+    loading: query.isLoading,
+    refresh: query.refetch,
+    refreshing: query.isFetching && !query.isLoading,
+    refreshError: query.isError && !query.isLoading ? query.error?.message || "" : "",
+    setData: (updater) => queryClient.setQueryData(queryKey, updater),
   };
 }

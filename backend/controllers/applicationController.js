@@ -6,7 +6,9 @@ const InterviewRound = require(
   "../models/InterviewRound"
 );
 const Student = require("../models/Student");
+const Company = require("../models/Company");
 const { parseSpreadsheet } = require("../utils/fileParser");
+const createAuditLog = require("../utils/audit");
 
 const applyRoundResult = async (
   application,
@@ -76,6 +78,7 @@ const createApplication = async (req, res) => {
       success: true,
       application,
     });
+    await createAuditLog(req, "Application Created", "Application", application._id);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -90,9 +93,15 @@ const getApplications =
       const {
         status,
         companyId,
+        search,
+        page,
+        limit,
       } = req.query;
 
       let filter = {};
+      const shouldPaginate = page !== undefined || limit !== undefined;
+      const currentPage = Math.max(Number(page) || 1, 1);
+      const pageSize = Math.min(Math.max(Number(limit) || 20, 1), 500);
 
       if (status) {
         filter.status = status;
@@ -103,16 +112,51 @@ const getApplications =
           companyId;
       }
 
-      const applications =
-        await Application.find(
-          filter
-        )
-          .populate("studentId")
-          .populate("companyId");
+      if (search) {
+        const [students, companies] = await Promise.all([
+          Student.find({
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { usn: { $regex: search, $options: "i" } },
+              { email: { $regex: search, $options: "i" } },
+            ],
+          }).select("_id"),
+          Company.find({
+            $or: [
+              { companyName: { $regex: search, $options: "i" } },
+              { location: { $regex: search, $options: "i" } },
+            ],
+          }).select("_id"),
+        ]);
+
+        filter.$or = [
+          { status: { $regex: search, $options: "i" } },
+          { studentId: { $in: students.map((student) => student._id) } },
+          { companyId: { $in: companies.map((company) => company._id) } },
+        ];
+      }
+
+      const applicationQuery = Application.find(filter)
+        .sort({ createdAt: -1 })
+        .populate("studentId")
+        .populate("companyId");
+
+      if (shouldPaginate) {
+        applicationQuery.skip((currentPage - 1) * pageSize).limit(pageSize);
+      }
+
+      const [applications, totalRecords] = await Promise.all([
+        applicationQuery,
+        Application.countDocuments(filter),
+      ]);
 
       res.json({
         success: true,
         applications,
+        data: applications,
+        currentPage,
+        totalPages: shouldPaginate ? Math.ceil(totalRecords / pageSize) : 1,
+        totalRecords,
       });
     } catch (error) {
       res.status(500).json({
@@ -153,6 +197,7 @@ const updateRoundResult =
         success: true,
         application,
       });
+      await createAuditLog(req, "Application Updated", "Application", application._id);
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -236,6 +281,7 @@ const bulkUploadResults = async (req, res) => {
         attended: result !== "PENDING",
         result,
       });
+      await createAuditLog(req, "Application Updated", "Application", application._id);
       updated += 1;
     }
 
@@ -332,6 +378,10 @@ const bulkOfferApplications = async (req, res) => {
       success: true,
       affectedCount: result.modifiedCount,
     });
+    await createAuditLog(req, "Offer Assigned", "Application", null, {
+      affectedCount: result.modifiedCount,
+      applicationIds,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -418,6 +468,7 @@ const markOfferReceived =
         success: true,
         application,
       });
+      await createAuditLog(req, "Offer Assigned", "Application", application._id);
     } catch (error) {
       res.status(500).json({
         success: false,
@@ -429,15 +480,24 @@ const markOfferReceived =
 const deleteApplication =
   async (req, res) => {
     try {
-      await Application.findByIdAndDelete(
+      const application = await Application.findByIdAndDelete(
         req.params.id
       );
+
+      if (!application) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "Application not found",
+        });
+      }
 
       res.json({
         success: true,
         message:
           "Application deleted",
       });
+      await createAuditLog(req, "Application Deleted", "Application", application._id);
     } catch (error) {
       res.status(500).json({
         success: false,

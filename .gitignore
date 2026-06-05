@@ -1,6 +1,40 @@
-*node_modules/
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment files
 .env
-.vscode/
-backend/logs/
-backend/uploads/
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# Build output
+dist/
 frontend/dist/
+build/
+
+# Runtime files
+backend/logs/
+logs/
+*.log
+backend/uploads/
+uploads/
+
+# Tooling and caches
+.vite/
+.vercel/
+frontend/.vercel/
+coverage/
+.nyc_output/
+.cache/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

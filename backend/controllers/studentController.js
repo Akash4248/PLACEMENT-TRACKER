@@ -1,5 +1,11 @@
 const Student = require("../models/Student");
+const fs = require("fs");
 const { parseSpreadsheet } = require("../utils/fileParser");
+const {
+  cloudinary,
+  isCloudinaryConfigured,
+} = require("../config/cloudinary");
+const createAuditLog = require("../utils/audit");
 
 const getProfileStrength = (student) => {
   const checks = [
@@ -32,6 +38,7 @@ const createStudent = async (
   try {
     const student =
       await Student.create(req.body);
+    await createAuditLog(req, "Student Created", "Student", student._id);
 
     res.status(201).json({
       success: true,
@@ -50,7 +57,19 @@ const getStudents = async (
   res
 ) => {
   try {
-    const { search } = req.query;
+    const {
+      search,
+      page,
+      limit,
+      department,
+      graduationYear,
+      minCGPA,
+      maxCGPA,
+      resumeStatus,
+    } = req.query;
+    const shouldPaginate = page !== undefined || limit !== undefined;
+    const currentPage = Math.max(Number(page) || 1, 1);
+    const pageSize = Math.min(Math.max(Number(limit) || 20, 1), 500);
 
     let query = {};
 
@@ -69,17 +88,51 @@ const getStudents = async (
               $options: "i",
             },
           },
+          {
+            email: {
+              $regex: search,
+              $options: "i",
+            },
+          },
+          {
+            department: {
+              $regex: search,
+              $options: "i",
+            },
+          },
         ],
       };
     }
 
-    const students =
-      await Student.find(query);
+    if (department) query.department = department;
+    if (graduationYear) query.graduationYear = Number(graduationYear);
+    if (resumeStatus) query.resumeStatus = resumeStatus;
+    if (minCGPA || maxCGPA) {
+      query.cgpa = {};
+      if (minCGPA) query.cgpa.$gte = Number(minCGPA);
+      if (maxCGPA) query.cgpa.$lte = Number(maxCGPA);
+    }
+
+    const studentQuery = Student.find(query).sort({ createdAt: -1, name: 1 });
+
+    if (shouldPaginate) {
+      studentQuery.skip((currentPage - 1) * pageSize).limit(pageSize);
+    }
+
+    const [students, totalRecords] = await Promise.all([
+      studentQuery,
+      Student.countDocuments(query),
+    ]);
+    const mappedStudents = students.map(withProfileStrength);
 
     res.json({
       success: true,
-      count: students.length,
-      students: students.map(withProfileStrength),
+      count: mappedStudents.length,
+      students: mappedStudents,
+      data: mappedStudents,
+      currentPage,
+      totalPages: shouldPaginate ? Math.ceil(totalRecords / pageSize) : 1,
+      totalRecords,
     });
   } catch (error) {
     res.status(500).json({
@@ -127,11 +180,40 @@ const uploadResume = async (req, res) => {
       });
     }
 
-    const resumeUrl = `${getPublicBaseUrl(req)}/uploads/resumes/${req.file.filename}`;
+    const existingStudent = await Student.findById(req.params.id);
+
+    if (!existingStudent) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    let resumeUrl = `${getPublicBaseUrl(req)}/uploads/resumes/${req.file.filename}`;
+    let resumePublicId;
+
+    if (isCloudinaryConfigured()) {
+      if (existingStudent.resumePublicId) {
+        await cloudinary.uploader.destroy(existingStudent.resumePublicId, {
+          resource_type: "raw",
+        });
+      }
+
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "campustrack/resumes",
+        resource_type: "raw",
+        use_filename: true,
+      });
+      resumeUrl = uploadResult.secure_url;
+      resumePublicId = uploadResult.public_id;
+      fs.unlink(req.file.path, () => {});
+    }
+
     const student = await Student.findByIdAndUpdate(
       req.params.id,
       {
         resumeUrl,
+        resumePublicId,
         resumeFileName: req.file.originalname,
         resumeUploadedAt: new Date(),
         resumeStatus: "Pending",
@@ -151,6 +233,7 @@ const uploadResume = async (req, res) => {
       resumeUrl,
       student: withProfileStrength(student),
     });
+    await createAuditLog(req, "Resume Uploaded", "Student", student._id);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -238,6 +321,43 @@ const rejectResume = async (req, res) => {
   }
 };
 
+const deleteResume = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    if (student.resumePublicId && isCloudinaryConfigured()) {
+      await cloudinary.uploader.destroy(student.resumePublicId, {
+        resource_type: "raw",
+      });
+    }
+
+    student.resumeUrl = undefined;
+    student.resumePublicId = undefined;
+    student.resumeFileName = undefined;
+    student.resumeUploadedAt = undefined;
+    student.resumeStatus = "Pending";
+    await student.save();
+    await createAuditLog(req, "Resume Deleted", "Student", student._id);
+
+    res.json({
+      success: true,
+      student: withProfileStrength(student),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 const updateStudent = async (
   req,
   res
@@ -252,10 +372,18 @@ const updateStudent = async (
         }
       );
 
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
     res.json({
       success: true,
       student,
     });
+    await createAuditLog(req, "Student Updated", "Student", student._id);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -269,14 +397,22 @@ const deleteStudent = async (
   res
 ) => {
   try {
-    await Student.findByIdAndDelete(
+    const student = await Student.findByIdAndDelete(
       req.params.id
     );
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
 
     res.json({
       success: true,
       message: "Student deleted",
     });
+    await createAuditLog(req, "Student Deleted", "Student", student._id);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -425,6 +561,11 @@ const importStudents = async (req, res) => {
       duplicates,
       errors,
     });
+    await createAuditLog(req, "Students Imported", "Student", null, {
+      imported,
+      skipped,
+      duplicates,
+    });
   } catch (error) {
     res.status(400).json({
       success: false,
@@ -444,5 +585,6 @@ module.exports = {
   getResume,
   verifyResume,
   rejectResume,
+  deleteResume,
   getProfileStrength,
 };

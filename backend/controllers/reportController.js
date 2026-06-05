@@ -140,67 +140,195 @@ const getPlacementAnalyticsData = async () => {
   };
 };
 
+const page = {
+  margin: 44,
+  width: 507,
+  bottom: 790,
+};
+
+const addPageIfNeeded = (doc, neededHeight = 40) => {
+  if (doc.y + neededHeight > page.bottom) {
+    doc.addPage();
+    doc.y = page.margin;
+  }
+};
+
 const drawTitle = (doc, title, subtitle) => {
-  doc.fontSize(22).fillColor("#0F172A").text(title, { bold: true });
-  doc.moveDown(0.3);
-  doc.fontSize(10).fillColor("#64748B").text(subtitle);
-  doc.moveDown(1);
-  doc.moveTo(50, doc.y).lineTo(562, doc.y).strokeColor("#E2E8F0").stroke();
-  doc.moveDown(1);
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(22)
+    .fillColor("#0F172A")
+    .text(title, page.margin, page.margin, {
+      width: page.width,
+      align: "left",
+    });
+  doc.moveDown(0.35);
+  doc.font("Helvetica").fontSize(9).fillColor("#64748B").text(subtitle, {
+    width: page.width,
+  });
+  doc.moveDown(0.9);
+  doc
+    .moveTo(page.margin, doc.y)
+    .lineTo(page.margin + page.width, doc.y)
+    .strokeColor("#CBD5E1")
+    .lineWidth(1)
+    .stroke();
+  doc.moveDown(0.9);
 };
 
 const drawSection = (doc, title) => {
-  doc.moveDown(0.8);
-  doc.fontSize(14).fillColor("#0F172A").text(title);
-  doc.moveDown(0.4);
+  addPageIfNeeded(doc, 48);
+  doc.moveDown(0.7);
+  doc.font("Helvetica-Bold").fontSize(13).fillColor("#0F172A").text(title, {
+    width: page.width,
+  });
+  doc.moveDown(0.45);
 };
 
-const drawKeyValues = (doc, items) => {
-  items.forEach(([label, value]) => {
-    doc.fontSize(10).fillColor("#64748B").text(label, { continued: true });
-    doc.fillColor("#0F172A").text(`  ${value}`);
-  });
-};
+const drawKeyValueGrid = (doc, items, columns = 4) => {
+  const gap = 8;
+  const rowGap = 8;
+  const cardWidth = (page.width - gap * (columns - 1)) / columns;
+  const cardHeight = 48;
 
-const drawTable = (doc, headers, rows, widths) => {
-  const startX = 50;
-  let y = doc.y;
-  doc.fontSize(9).fillColor("#0F172A");
-  headers.forEach((header, index) => {
-    doc.text(header, startX + widths.slice(0, index).reduce((a, b) => a + b, 0), y, {
-      width: widths[index],
-    });
-  });
-  y += 18;
-  doc.moveTo(startX, y - 4).lineTo(562, y - 4).strokeColor("#E2E8F0").stroke();
-
-  rows.slice(0, 18).forEach((row) => {
-    if (y > 720) {
-      doc.addPage();
-      y = 50;
+  items.forEach(([label, value], index) => {
+    if (index % columns === 0) {
+      addPageIfNeeded(doc, cardHeight + rowGap);
     }
 
-    row.forEach((value, index) => {
-      doc.fillColor("#334155").text(String(value), startX + widths.slice(0, index).reduce((a, b) => a + b, 0), y, {
-        width: widths[index],
+    const column = index % columns;
+    const x = page.margin + column * (cardWidth + gap);
+    const y = doc.y;
+
+    doc
+      .roundedRect(x, y, cardWidth, cardHeight, 6)
+      .fillAndStroke("#F8FAFC", "#E2E8F0");
+    doc
+      .font("Helvetica")
+      .fontSize(7.5)
+      .fillColor("#64748B")
+      .text(String(label).toUpperCase(), x + 9, y + 9, {
+        width: cardWidth - 18,
+        ellipsis: true,
       });
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(12)
+      .fillColor("#0F172A")
+      .text(String(value), x + 9, y + 25, {
+        width: cardWidth - 18,
+        ellipsis: true,
+      });
+
+    if (column === columns - 1 || index === items.length - 1) {
+      doc.y = y + cardHeight + rowGap;
+    }
+  });
+};
+
+const normalizeTableRows = (rows) =>
+  rows.map((row) => row.map((value) => (value === undefined || value === null ? "-" : String(value))));
+
+const drawTableHeader = (doc, headers, widths, x, y) => {
+  const headerHeight = 24;
+
+  doc.rect(x, y, page.width, headerHeight).fill("#EFF6FF");
+  doc.strokeColor("#BFDBFE").lineWidth(0.7).rect(x, y, page.width, headerHeight).stroke();
+  doc.font("Helvetica-Bold").fontSize(8).fillColor("#1E3A8A");
+
+  let cursorX = x;
+  headers.forEach((header, index) => {
+    doc.text(header, cursorX + 6, y + 7, {
+      width: widths[index] - 12,
+      height: headerHeight - 10,
+      ellipsis: true,
     });
-    y += 18;
+    cursorX += widths[index];
   });
 
-  doc.y = y + 8;
+  return y + headerHeight;
+};
+
+const drawTable = (doc, headers, rows, widths, options = {}) => {
+  const tableRows = normalizeTableRows(rows).slice(0, options.limit || 80);
+  const x = page.margin;
+  const rowPaddingX = 6;
+  const rowPaddingY = 7;
+  const minRowHeight = 25;
+  let y = doc.y;
+
+  if (!tableRows.length) {
+    addPageIfNeeded(doc, 32);
+    doc
+      .roundedRect(x, y, page.width, 32, 6)
+      .fillAndStroke("#F8FAFC", "#E2E8F0");
+    doc.font("Helvetica").fontSize(9).fillColor("#64748B").text("No records available", x + 10, y + 11);
+    doc.y = y + 42;
+    return;
+  }
+
+  addPageIfNeeded(doc, 56);
+  y = drawTableHeader(doc, headers, widths, x, y);
+
+  tableRows.forEach((row, rowIndex) => {
+    doc.font("Helvetica").fontSize(8);
+    const rowHeights = row.map((value, columnIndex) =>
+      doc.heightOfString(value, {
+        width: widths[columnIndex] - rowPaddingX * 2,
+      }) +
+      rowPaddingY * 2
+    );
+    const rowHeight = Math.max(minRowHeight, ...rowHeights);
+
+    if (y + rowHeight > page.bottom) {
+      doc.addPage();
+      y = drawTableHeader(doc, headers, widths, x, page.margin);
+    }
+
+    doc
+      .rect(x, y, page.width, rowHeight)
+      .fill(rowIndex % 2 === 0 ? "#FFFFFF" : "#F8FAFC");
+    doc
+      .strokeColor("#E2E8F0")
+      .lineWidth(0.5)
+      .rect(x, y, page.width, rowHeight)
+      .stroke();
+
+    let cursorX = x;
+    row.forEach((value, columnIndex) => {
+      if (columnIndex > 0) {
+        doc
+          .moveTo(cursorX, y)
+          .lineTo(cursorX, y + rowHeight)
+          .strokeColor("#E2E8F0")
+          .lineWidth(0.5)
+          .stroke();
+      }
+
+      doc.font("Helvetica").fontSize(8).fillColor("#334155").text(value, cursorX + rowPaddingX, y + rowPaddingY, {
+        width: widths[columnIndex] - rowPaddingX * 2,
+        height: rowHeight - rowPaddingY * 2,
+        ellipsis: true,
+      });
+      cursorX += widths[columnIndex];
+    });
+
+    y += rowHeight;
+  });
+
+  doc.y = y + 12;
 };
 
 const sendPdf = (res, filename, title, data, sections = {}) => {
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
 
-  const doc = new PDFDocument({ margin: 50, size: "A4" });
+  const doc = new PDFDocument({ margin: page.margin, size: "A4" });
   doc.pipe(res);
 
   drawTitle(doc, title, `Generated ${data.metadata.generatedAt}`);
   drawSection(doc, "Executive Summary");
-  drawKeyValues(doc, [
+  drawKeyValueGrid(doc, [
     ["Total Students", data.executiveSummary.totalStudents],
     ["Total Companies", data.executiveSummary.totalCompanies],
     ["Applications", data.executiveSummary.totalApplications],
@@ -223,7 +351,7 @@ const sendPdf = (res, filename, title, data, sections = {}) => {
         item.selected,
         `${item.placementRate}%`,
       ]),
-      [110, 85, 85, 85, 80]
+      [155, 88, 88, 88, 88]
     );
   }
 
@@ -231,36 +359,49 @@ const sendPdf = (res, filename, title, data, sections = {}) => {
     drawSection(doc, "Company Analytics");
     drawTable(
       doc,
-      ["Company", "Applicants", "Selected", "Rejected", "Offers", "Rate"],
+      ["Company", "Package", "Applicants", "Selected", "Rejected", "Offers", "Rate"],
       data.companyAnalytics.map((item) => [
         item.companyName,
+        item.package ? `${item.package} LPA` : "-",
         item.applicants,
         item.selected,
         item.rejected,
         item.offers,
         `${item.selectionRate}%`,
       ]),
-      [150, 75, 75, 75, 65, 60]
+      [145, 70, 64, 64, 64, 50, 50]
     );
   }
 
   if (sections.funnel !== false) {
     drawSection(doc, "Recruitment Funnel");
-    drawKeyValues(doc, [
-      ["Applied", data.funnel.applied],
-      ["Round 1", data.funnel.round1],
-      ["Round 2", data.funnel.round2],
-      ["Round 3", data.funnel.round3],
-      ["Selected", data.funnel.selected],
-    ]);
+    drawTable(
+      doc,
+      ["Stage", "Candidates"],
+      [
+        ["Applied", data.funnel.applied],
+        ["Round 1", data.funnel.round1],
+        ["Round 2", data.funnel.round2],
+        ["Round 3", data.funnel.round3],
+        ["Selected", data.funnel.selected],
+      ],
+      [360, 147],
+      { limit: 10 }
+    );
   }
 
   drawSection(doc, "Report Metadata");
-  drawKeyValues(doc, [
-    ["Report Name", data.metadata.reportName],
-    ["Generated By", data.metadata.generatedBy],
-    ["Generated Timestamp", data.metadata.generatedAt],
-  ]);
+  drawTable(
+    doc,
+    ["Field", "Value"],
+    [
+      ["Report Name", data.metadata.reportName],
+      ["Generated By", data.metadata.generatedBy],
+      ["Generated Timestamp", data.metadata.generatedAt],
+    ],
+    [160, 347],
+    { limit: 10 }
+  );
 
   doc.end();
 };

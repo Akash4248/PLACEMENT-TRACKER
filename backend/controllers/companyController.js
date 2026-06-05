@@ -1,6 +1,7 @@
 const Company = require("../models/Company");
 const Student = require("../models/Student");
 const PDFDocument = require("pdfkit");
+const createAuditLog = require("../utils/audit");
 
 const createCompany = async (req, res) => {
   try {
@@ -13,6 +14,7 @@ const createCompany = async (req, res) => {
       success: true,
       company,
     });
+    await createAuditLog(req, "Company Created", "Company", company._id);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -23,12 +25,59 @@ const createCompany = async (req, res) => {
 
 const getCompanies = async (req, res) => {
   try {
-    const companies = await Company.find();
+    const {
+      search,
+      page,
+      limit,
+      status,
+      minPackage,
+      maxPackage,
+      eligibilityCGPA,
+    } = req.query;
+    const shouldPaginate = page !== undefined || limit !== undefined;
+    const currentPage = Math.max(Number(page) || 1, 1);
+    const pageSize = Math.min(Math.max(Number(limit) || 20, 1), 500);
+    const filter = {};
+
+    if (search) {
+      filter.$or = [
+        { companyName: { $regex: search, $options: "i" } },
+        { location: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (status) filter.status = status;
+    if (minPackage || maxPackage) {
+      filter.package = {};
+      if (minPackage) filter.package.$gte = Number(minPackage);
+      if (maxPackage) filter.package.$lte = Number(maxPackage);
+    }
+    if (eligibilityCGPA) {
+      filter.minimumCGPA = { $lte: Number(eligibilityCGPA) };
+    }
+
+    const companyQuery = Company.find(filter).sort({
+      driveDate: 1,
+      companyName: 1,
+    });
+
+    if (shouldPaginate) {
+      companyQuery.skip((currentPage - 1) * pageSize).limit(pageSize);
+    }
+
+    const [companies, totalRecords] = await Promise.all([
+      companyQuery,
+      Company.countDocuments(filter),
+    ]);
 
     res.json({
       success: true,
       count: companies.length,
       companies,
+      data: companies,
+      currentPage,
+      totalPages: shouldPaginate ? Math.ceil(totalRecords / pageSize) : 1,
+      totalRecords,
     });
   } catch (error) {
     res.status(500).json({
@@ -55,6 +104,7 @@ const getCompany = async (req, res) => {
       success: true,
       company,
     });
+    await createAuditLog(req, "Company Updated", "Company", company._id);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -74,6 +124,13 @@ const updateCompany = async (req, res) => {
         payload,
         { new: true }
       );
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
 
     res.json({
       success: true,
@@ -469,14 +526,22 @@ const getCompanyAnalytics = async (req, res) => {
 
 const deleteCompany = async (req, res) => {
   try {
-    await Company.findByIdAndDelete(
+    const company = await Company.findByIdAndDelete(
       req.params.id
     );
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
 
     res.json({
       success: true,
       message: "Company deleted",
     });
+    await createAuditLog(req, "Company Deleted", "Company", company._id);
   } catch (error) {
     res.status(500).json({
       success: false,

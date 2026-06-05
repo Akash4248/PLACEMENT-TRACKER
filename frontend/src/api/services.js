@@ -19,6 +19,7 @@ export const studentsApi = {
   update: (id, payload) => apiClient.put(`/students/${id}`, payload),
   remove: (id) => apiClient.delete(`/students/${id}`),
   resume: (id) => apiClient.get(`/students/${id}/resume`),
+  deleteResume: (id) => apiClient.delete(`/students/${id}/resume`),
   uploadResume: (id, file, onUploadProgress) => {
     const formData = new FormData();
     formData.append("resume", file);
@@ -40,7 +41,7 @@ export const studentsApi = {
 };
 
 export const companiesApi = {
-  list: () => apiClient.get("/companies"),
+  list: (params) => apiClient.get("/companies", { params }),
   get: (id) => apiClient.get(`/companies/${id}`),
   eligibleStudents: (id) => apiClient.get(`/companies/${id}/eligible-students`),
   shortlist: (id) => apiClient.get(`/companies/${id}/shortlist`),
@@ -99,4 +100,8 @@ export const reportsApi = {
     apiClient.get(`/reports/student/${studentId}/pdf`, { responseType: "blob" }),
   funnelPdf: () =>
     apiClient.get("/reports/funnel/pdf", { responseType: "blob" }),
+};
+
+export const auditApi = {
+  list: (params) => apiClient.get("/audit-logs", { params }),
 };

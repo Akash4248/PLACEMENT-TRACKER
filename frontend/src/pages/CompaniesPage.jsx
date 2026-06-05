@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiBarChart2, FiEdit2, FiEye, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiBarChart2, FiEdit2, FiEye, FiPlus, FiSearch, FiTrash2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { companiesApi } from "../api/services";
@@ -10,6 +10,7 @@ import DataTable from "../components/ui/DataTable";
 import FormField, { inputClass, textareaClass } from "../components/ui/FormField";
 import Modal from "../components/ui/Modal";
 import PageHeader from "../components/ui/PageHeader";
+import Pagination from "../components/ui/Pagination";
 import { ErrorState, LoadingState } from "../components/ui/StateBlock";
 import useAsync from "../hooks/useAsync";
 import { formatCurrency, formatDate } from "../utils/formatters";
@@ -107,17 +108,32 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
 }
 
 export default function CompaniesPage() {
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("");
+  const [minPackage, setMinPackage] = useState("");
+  const [maxPackage, setMaxPackage] = useState("");
+  const [eligibilityCGPA, setEligibilityCGPA] = useState("");
+  const [page, setPage] = useState(1);
   const [editing, setEditing] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [eligibilityCompany, setEligibilityCompany] = useState(null);
   const [eligibility, setEligibility] = useState(null);
   const [eligibilityLoading, setEligibilityLoading] = useState(false);
   const [eligibilityError, setEligibilityError] = useState("");
+  const pageSize = 20;
   const { data, error, loading, refresh } = useAsync(async () => {
-    const { data: response } = await companiesApi.list();
-    return response.companies || [];
-  }, []);
-  const rows = data || [];
+    const { data: response } = await companiesApi.list({
+      search: query || undefined,
+      status: status || undefined,
+      minPackage: minPackage || undefined,
+      maxPackage: maxPackage || undefined,
+      eligibilityCGPA: eligibilityCGPA || undefined,
+      page,
+      limit: pageSize,
+    });
+    return response;
+  }, [query, status, minPackage, maxPackage, eligibilityCGPA, page]);
+  const rows = data?.companies || [];
 
   const viewEligibility = async (company) => {
     setEligibilityCompany(company);
@@ -165,7 +181,29 @@ export default function CompaniesPage() {
         description="Maintain recruiting companies, packages, eligibility rules, and drive status."
         title="Companies"
       />
+      <div className="mb-4 flex h-11 max-w-md items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
+        <FiSearch className="h-4 w-4 text-muted" />
+        <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => { setPage(1); setQuery(event.target.value); }} placeholder="Search company or location" value={query} />
+      </div>
+      <div className="mb-4 grid gap-3 md:grid-cols-4">
+        <select className={inputClass} onChange={(event) => { setPage(1); setStatus(event.target.value); }} value={status}>
+          <option value="">All statuses</option>
+          <option value="Upcoming">Upcoming</option>
+          <option value="Ongoing">Ongoing</option>
+          <option value="Completed">Completed</option>
+        </select>
+        <input className={inputClass} onChange={(event) => { setPage(1); setMinPackage(event.target.value); }} placeholder="Min package" step="0.1" type="number" value={minPackage} />
+        <input className={inputClass} onChange={(event) => { setPage(1); setMaxPackage(event.target.value); }} placeholder="Max package" step="0.1" type="number" value={maxPackage} />
+        <input className={inputClass} onChange={(event) => { setPage(1); setEligibilityCGPA(event.target.value); }} placeholder="Student CGPA eligibility" step="0.1" type="number" value={eligibilityCGPA} />
+      </div>
       <DataTable columns={columns} empty={{ title: "No companies yet", description: "Create a company drive before adding rounds or applications." }} rows={rows} />
+      <Pagination
+        currentPage={data?.currentPage || page}
+        onPageChange={setPage}
+        pageSize={pageSize}
+        totalPages={data?.totalPages || 1}
+        totalRecords={data?.totalRecords || 0}
+      />
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Edit Company" : "Add Company"}>
         <CompanyForm initialValues={editing} onCancel={() => setModalOpen(false)} onSaved={() => { setModalOpen(false); refresh(); }} />
       </Modal>

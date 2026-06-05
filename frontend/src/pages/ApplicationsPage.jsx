@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiCheck, FiGift, FiPlus, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiCheck, FiGift, FiPlus, FiSearch, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { applicationsApi, companiesApi, roundsApi, studentsApi } from "../api/services";
 import Badge from "../components/ui/Badge";
@@ -9,6 +9,7 @@ import Card from "../components/ui/Card";
 import FormField, { inputClass } from "../components/ui/FormField";
 import Modal from "../components/ui/Modal";
 import PageHeader from "../components/ui/PageHeader";
+import Pagination from "../components/ui/Pagination";
 import { EmptyState, ErrorState, LoadingState } from "../components/ui/StateBlock";
 import UploadPreviewModal from "../components/ui/UploadPreviewModal";
 import useAsync from "../hooks/useAsync";
@@ -85,13 +86,22 @@ function ApplicationForm({ companies, onCancel, onSaved, students }) {
 }
 
 export default function ApplicationsPage() {
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [bulkOpen, setBulkOpen] = useState(false);
   const [bulkSummary, setBulkSummary] = useState(null);
   const [selectedIds, setSelectedIds] = useState(() => new Set());
+  const pageSize = 50;
   const { data, error, loading, refresh } = useAsync(async () => {
     const [applicationsRes, studentsRes, companiesRes] = await Promise.all([
-      applicationsApi.list(),
+      applicationsApi.list({
+        search: query || undefined,
+        status: statusFilter || undefined,
+        page,
+        limit: pageSize,
+      }),
       studentsApi.list(),
       companiesApi.list(),
     ]);
@@ -110,8 +120,13 @@ export default function ApplicationsPage() {
       companies: companiesRes.data.companies || [],
       roundsByCompany,
       students: studentsRes.data.students || [],
+      pagination: {
+        currentPage: applicationsRes.data.currentPage || page,
+        totalPages: applicationsRes.data.totalPages || 1,
+        totalRecords: applicationsRes.data.totalRecords || 0,
+      },
     };
-  }, []);
+  }, [query, statusFilter, page]);
 
   const grouped = useMemo(() => {
     const map = Object.fromEntries(statuses.map((status) => [status, []]));
@@ -165,6 +180,16 @@ export default function ApplicationsPage() {
         description="Track each candidate from applied through interviews, selections, rejections, and offers."
         title="Applications"
       />
+      <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px]">
+        <div className="flex h-11 items-center gap-2 rounded-xl border border-border bg-white px-3 shadow-card">
+          <FiSearch className="h-4 w-4 text-muted" />
+          <input className="w-full border-0 bg-transparent text-sm outline-none" onChange={(event) => { setPage(1); setQuery(event.target.value); }} placeholder="Search student, company, or status" value={query} />
+        </div>
+        <select className={inputClass} onChange={(event) => { setPage(1); setStatusFilter(event.target.value); }} value={statusFilter}>
+          <option value="">All statuses</option>
+          {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
+        </select>
+      </div>
       {selectedCount > 0 ? (
         <div className="sticky top-20 z-20 mb-4 flex flex-col gap-3 rounded-2xl border border-border bg-white p-3 shadow-lift sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-semibold text-ink">{selectedCount} Candidates Selected</p>
@@ -241,6 +266,13 @@ export default function ApplicationsPage() {
           <EmptyState description="Create applications to populate the Kanban board." title="No applications yet" />
         </Card>
       ) : null}
+      <Pagination
+        currentPage={data.pagination?.currentPage || page}
+        onPageChange={setPage}
+        pageSize={pageSize}
+        totalPages={data.pagination?.totalPages || 1}
+        totalRecords={data.pagination?.totalRecords || 0}
+      />
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New Application">
         <ApplicationForm companies={data.companies} onCancel={() => setModalOpen(false)} onSaved={() => { setModalOpen(false); refresh(); }} students={data.students} />
       </Modal>

@@ -13,6 +13,7 @@ const {
   getResume,
   verifyResume,
   rejectResume,
+  deleteResume,
 } = require("../controllers/studentController");
 const upload = require("../middleware/uploadMiddleware");
 const resumeUpload = require("../middleware/resumeUploadMiddleware");
@@ -38,6 +39,8 @@ router.post(
 );
 
 router.get("/:id/resume", getResume);
+
+router.delete("/:id/resume", deleteResume);
 
 router.put("/:id/verify-resume", verifyResume);
 

@@ -45,6 +45,10 @@ const studentSchema = new mongoose.Schema(
       type: String,
     },
 
+    resumePublicId: {
+      type: String,
+    },
+
     resumeFileName: {
       type: String,
     },
