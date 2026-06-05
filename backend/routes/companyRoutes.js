@@ -12,6 +12,8 @@ const {
   updateCompany,
   deleteCompany,
   getEligibleStudents,
+  getShortlist,
+  downloadShortlistPdf,
   getCompanyFunnel,
   getCompanyAnalytics,
 } = require("../controllers/companyController");
@@ -28,6 +30,8 @@ router.get(
   "/:id/eligible-students",
   getEligibleStudents
 );
+router.get("/:id/shortlist", getShortlist);
+router.get("/:id/shortlist/pdf", downloadShortlistPdf);
 router.get("/:id/funnel", getCompanyFunnel);
 router.get("/:id/analytics", getCompanyAnalytics);
 router.get("/:id", getCompany);

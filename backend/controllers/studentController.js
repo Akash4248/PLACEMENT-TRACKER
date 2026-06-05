@@ -1,6 +1,30 @@
 const Student = require("../models/Student");
 const { parseSpreadsheet } = require("../utils/fileParser");
 
+const getProfileStrength = (student) => {
+  const checks = [
+    student.name,
+    student.email,
+    student.phone,
+    student.department,
+    student.cgpa !== undefined && student.cgpa !== null,
+    student.graduationYear,
+    student.resumeUrl,
+  ];
+  const completed = checks.filter(Boolean).length;
+
+  return Math.round((completed / checks.length) * 100);
+};
+
+const getPublicBaseUrl = (req) =>
+  process.env.BACKEND_PUBLIC_URL ||
+  `${req.protocol}://${req.get("host")}`;
+
+const withProfileStrength = (student) => ({
+  ...student.toObject(),
+  profileStrength: getProfileStrength(student),
+});
+
 const createStudent = async (
   req,
   res
@@ -55,7 +79,7 @@ const getStudents = async (
     res.json({
       success: true,
       count: students.length,
-      students,
+      students: students.map(withProfileStrength),
     });
   } catch (error) {
     res.status(500).json({
@@ -84,7 +108,127 @@ const getStudent = async (
 
     res.json({
       success: true,
-      student,
+      student: withProfileStrength(student),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const uploadResume = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Resume file is required",
+      });
+    }
+
+    const resumeUrl = `${getPublicBaseUrl(req)}/uploads/resumes/${req.file.filename}`;
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      {
+        resumeUrl,
+        resumeFileName: req.file.originalname,
+        resumeUploadedAt: new Date(),
+        resumeStatus: "Pending",
+      },
+      { new: true }
+    );
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      resumeUrl,
+      student: withProfileStrength(student),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getResume = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+
+    if (!student || !student.resumeUrl) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      resumeUrl: student.resumeUrl,
+      resumeFileName: student.resumeFileName,
+      resumeStatus: student.resumeStatus,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const verifyResume = async (req, res) => {
+  try {
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      { resumeStatus: "Verified" },
+      { new: true }
+    );
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      student: withProfileStrength(student),
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const rejectResume = async (req, res) => {
+  try {
+    const student = await Student.findByIdAndUpdate(
+      req.params.id,
+      { resumeStatus: "Rejected" },
+      { new: true }
+    );
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      student: withProfileStrength(student),
     });
   } catch (error) {
     res.status(500).json({
@@ -296,4 +440,9 @@ module.exports = {
   updateStudent,
   deleteStudent,
   importStudents,
+  uploadResume,
+  getResume,
+  verifyResume,
+  rejectResume,
+  getProfileStrength,
 };

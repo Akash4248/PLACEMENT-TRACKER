@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiArrowRight, FiBriefcase } from "react-icons/fi";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import AuthShell from "../components/auth/AuthShell";
 import Button from "../components/ui/Button";
 import FormField, { inputClass } from "../components/ui/FormField";
@@ -36,6 +37,7 @@ export default function SignupPage() {
       navigate("/dashboard", { replace: true });
     } catch (err) {
       setError(err.message);
+      toast.error("Signup failed");
     }
   };
 

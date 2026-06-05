@@ -9,8 +9,13 @@ const {
   updateStudent,
   deleteStudent,
   importStudents,
+  uploadResume,
+  getResume,
+  verifyResume,
+  rejectResume,
 } = require("../controllers/studentController");
 const upload = require("../middleware/uploadMiddleware");
+const resumeUpload = require("../middleware/resumeUploadMiddleware");
 
 const {
   protect,
@@ -25,6 +30,18 @@ router.post(
   upload.single("file"),
   importStudents
 );
+
+router.post(
+  "/:id/resume",
+  resumeUpload.single("resume"),
+  uploadResume
+);
+
+router.get("/:id/resume", getResume);
+
+router.put("/:id/verify-resume", verifyResume);
+
+router.put("/:id/reject-resume", rejectResume);
 
 router.get("/", getStudents);
 

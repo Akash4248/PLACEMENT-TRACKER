@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { authApi } from "../api/services";
+import logger from "../utils/logger";
 
 const AuthContext = createContext(null);
 
@@ -52,6 +54,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem("campustrack_user", JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
+    toast.success("Login successful");
+    logger.info("User logged in", { email: payload.email });
     return data;
   };
 
@@ -61,6 +65,8 @@ export function AuthProvider({ children }) {
     localStorage.setItem("campustrack_user", JSON.stringify(data.user));
     setToken(data.token);
     setUser(data.user);
+    toast.success("Account created");
+    logger.info("User signed up", { email: payload.email });
     return data;
   };
 
@@ -69,6 +75,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("campustrack_user");
     setToken(null);
     setUser(null);
+    toast.success("Logged out");
+    logger.info("User logged out");
   };
 
   const value = useMemo(

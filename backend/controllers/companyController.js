@@ -1,5 +1,6 @@
 const Company = require("../models/Company");
 const Student = require("../models/Student");
+const PDFDocument = require("pdfkit");
 
 const createCompany = async (req, res) => {
   try {
@@ -106,6 +107,14 @@ const normalizeCompanyPayload = (payload) => {
         .filter(Boolean);
   }
 
+  if (typeof next.allowedGraduationYears === "string") {
+    next.allowedGraduationYears =
+      next.allowedGraduationYears
+        .split(",")
+        .map((year) => Number(year.trim()))
+        .filter(Boolean);
+  }
+
   return next;
 };
 
@@ -131,6 +140,8 @@ const getEligibleStudents = async (
       0;
     const allowedDepartments =
       company.allowedDepartments || [];
+    const allowedGraduationYears =
+      company.allowedGraduationYears || [];
     const departmentFilter =
       allowedDepartments.length > 0
         ? {
@@ -139,10 +150,19 @@ const getEligibleStudents = async (
             },
           }
         : {};
+    const graduationYearFilter =
+      allowedGraduationYears.length > 0
+        ? {
+            graduationYear: {
+              $in: allowedGraduationYears,
+            },
+          }
+        : {};
 
     const students = await Student.find({
       cgpa: { $gte: minimumCGPA },
       ...departmentFilter,
+      ...graduationYearFilter,
     });
 
     const notEligibleStudents =
@@ -154,6 +174,15 @@ const getEligibleStudents = async (
                 {
                   department: {
                     $nin: allowedDepartments,
+                  },
+                },
+              ]
+            : []),
+          ...(allowedGraduationYears.length > 0
+            ? [
+                {
+                  graduationYear: {
+                    $nin: allowedGraduationYears,
                   },
                 },
               ]
@@ -171,6 +200,117 @@ const getEligibleStudents = async (
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getShortlistData = async (companyId) => {
+  const company = await Company.findById(companyId);
+
+  if (!company) {
+    const error = new Error("Company not found");
+    error.status = 404;
+    throw error;
+  }
+
+  const minimumCGPA =
+    company.minimumCGPA ??
+    company.eligibilityCGPA ??
+    0;
+  const allowedDepartments =
+    company.allowedDepartments || [];
+  const allowedGraduationYears =
+    company.allowedGraduationYears || [];
+  const allStudents = await Student.find();
+
+  const isEligible = (student) => {
+    const cgpaOk = Number(student.cgpa || 0) >= minimumCGPA;
+    const departmentOk =
+      allowedDepartments.length === 0 ||
+      allowedDepartments.includes(student.department);
+    const yearOk =
+      allowedGraduationYears.length === 0 ||
+      allowedGraduationYears.includes(student.graduationYear);
+
+    return cgpaOk && departmentOk && yearOk;
+  };
+
+  const eligibleStudents = allStudents.filter(isEligible);
+  const resumeSubmitted = eligibleStudents.filter(
+    (student) => Boolean(student.resumeUrl)
+  );
+  const resumeVerified = resumeSubmitted.filter(
+    (student) => student.resumeStatus === "Verified"
+  );
+  const shortlistedStudents = resumeVerified;
+
+  return {
+    company,
+    summary: {
+      totalStudents: allStudents.length,
+      eligibleStudents: eligibleStudents.length,
+      resumeSubmitted: resumeSubmitted.length,
+      resumeVerified: resumeVerified.length,
+      shortlistedStudents: shortlistedStudents.length,
+    },
+    students: shortlistedStudents,
+  };
+};
+
+const getShortlist = async (req, res) => {
+  try {
+    const data = await getShortlistData(req.params.id);
+
+    res.json({
+      success: true,
+      shortlistedCount: data.students.length,
+      summary: data.summary,
+      students: data.students,
+    });
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const downloadShortlistPdf = async (req, res) => {
+  try {
+    const data = await getShortlistData(req.params.id);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${data.company.companyName.replace(/\s+/g, "-").toLowerCase()}-shortlist.pdf"`
+    );
+
+    const doc = new PDFDocument({ margin: 50, size: "A4" });
+    doc.pipe(res);
+    doc.fontSize(20).text(`${data.company.companyName} Shortlist Report`);
+    doc.moveDown(0.5);
+    doc.fontSize(10).fillColor("#64748B").text(`Generated: ${new Date().toISOString()}`);
+    doc.moveDown();
+    doc.fillColor("#0F172A").fontSize(13).text("Shortlist Summary");
+    doc.moveDown(0.5);
+    Object.entries(data.summary).forEach(([key, value]) => {
+      doc.fontSize(10).text(`${key}: ${value}`);
+    });
+    doc.moveDown();
+    doc.fontSize(13).text("Shortlisted Students");
+    doc.moveDown(0.5);
+    data.students.slice(0, 80).forEach((student, index) => {
+      doc
+        .fontSize(9)
+        .text(
+          `${index + 1}. ${student.usn} | ${student.name} | ${student.department} | CGPA ${student.cgpa} | ${student.graduationYear}`
+        );
+    });
+    doc.end();
+  } catch (error) {
+    res.status(error.status || 500).json({
       success: false,
       message: error.message,
     });
@@ -352,6 +492,8 @@ module.exports = {
   updateCompany,
   deleteCompany,
   getEligibleStudents,
+  getShortlist,
+  downloadShortlistPdf,
   getCompanyFunnel,
   getCompanyAnalytics,
 };

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiCheck, FiGift, FiPlus, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import toast from "react-hot-toast";
 import { applicationsApi, companiesApi, roundsApi, studentsApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -53,6 +54,7 @@ function ApplicationForm({ companies, onCancel, onSaved, students }) {
     setError("");
     try {
       await applicationsApi.create(values);
+      toast.success("Application created");
       onSaved();
     } catch (err) {
       setError(err.message);
@@ -146,6 +148,7 @@ export default function ApplicationsPage() {
     const ids = Array.from(selectedIds);
     if (!ids.length) return;
     await action(ids);
+    toast.success("Application updated");
     setSelectedIds(new Set());
     refresh();
   };
@@ -247,6 +250,7 @@ export default function ApplicationsPage() {
         onSubmit={async (file, onProgress) => {
           const { data: response } = await applicationsApi.bulkResults(file, onProgress);
           setBulkSummary(response);
+          toast.success("Upload complete");
           refresh();
         }}
         open={bulkOpen}

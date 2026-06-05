@@ -1,23 +1,47 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function useAsync(loader, deps = []) {
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshError, setRefreshError] = useState("");
+  const hasLoadedRef = useRef(false);
 
   const run = useCallback(async () => {
-    setLoading(true);
-    setError("");
+    const isInitialLoad = !hasLoadedRef.current;
+
+    if (isInitialLoad) {
+      setLoading(true);
+      setError("");
+    } else {
+      setRefreshing(true);
+      setRefreshError("");
+    }
 
     try {
       const result = await loader();
       setData(result);
+      hasLoadedRef.current = true;
+      setError("");
+      setRefreshError("");
       return result;
     } catch (err) {
-      setError(err.message || "Unable to load data");
+      const message = err.message || "Unable to load data";
+
+      if (isInitialLoad) {
+        setError(message);
+      } else {
+        setRefreshError(message);
+      }
+
       return null;
     } finally {
-      setLoading(false);
+      if (isInitialLoad) {
+        setLoading(false);
+      } else {
+        setRefreshing(false);
+      }
     }
   }, deps);
 
@@ -25,5 +49,13 @@ export default function useAsync(loader, deps = []) {
     run();
   }, [run]);
 
-  return { data, error, loading, refresh: run, setData };
+  return {
+    data,
+    error,
+    loading,
+    refresh: run,
+    refreshing,
+    refreshError,
+    setData,
+  };
 }

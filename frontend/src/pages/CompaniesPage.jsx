@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiBarChart2, FiEdit2, FiEye, FiPlus, FiTrash2 } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import { companiesApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -23,6 +24,7 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
       eligibilityCGPA: "",
       minimumCGPA: "",
       allowedDepartments: "",
+      allowedGraduationYears: "",
       location: "",
       package: "",
       status: "Upcoming",
@@ -38,11 +40,19 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
       allowedDepartments: values.allowedDepartments
         ? values.allowedDepartments.split(",").map((department) => department.trim()).filter(Boolean)
         : [],
+      allowedGraduationYears: values.allowedGraduationYears
+        ? values.allowedGraduationYears.split(",").map((year) => Number(year.trim())).filter(Boolean)
+        : [],
       package: Number(values.package),
     };
     try {
-      if (initialValues?._id) await companiesApi.update(initialValues._id, payload);
-      else await companiesApi.create(payload);
+      if (initialValues?._id) {
+        await companiesApi.update(initialValues._id, payload);
+        toast.success("Company updated");
+      } else {
+        await companiesApi.create(payload);
+        toast.success("Company created");
+      }
       onSaved();
     } catch (err) {
       setError(err.message);
@@ -70,6 +80,9 @@ function CompanyForm({ initialValues, onCancel, onSaved }) {
         </FormField>
         <FormField label="Allowed Departments">
           <input className={inputClass} placeholder="CSE, ISE, AIML" {...register("allowedDepartments")} />
+        </FormField>
+        <FormField label="Allowed Graduation Years">
+          <input className={inputClass} placeholder="2025, 2026" {...register("allowedGraduationYears")} />
         </FormField>
         <FormField label="Drive Date">
           <input className={inputClass} type="date" {...register("driveDate")} />
@@ -133,7 +146,7 @@ export default function CompaniesPage() {
       header: "Actions",
       render: (row) => (
         <div className="flex gap-2">
-          <Button onClick={() => { setEditing({ ...row, driveDate: row.driveDate?.slice(0, 10) || "", allowedDepartments: row.allowedDepartments?.join(", ") || "" }); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
+          <Button onClick={() => { setEditing({ ...row, driveDate: row.driveDate?.slice(0, 10) || "", allowedDepartments: row.allowedDepartments?.join(", ") || "", allowedGraduationYears: row.allowedGraduationYears?.join(", ") || "" }); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
           <Button onClick={() => viewEligibility(row)} size="sm" variant="secondary"><FiEye /></Button>
           <Link className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-white px-3 text-xs font-semibold text-ink transition hover:bg-slate-50" to={`/companies/${row._id}/analytics`}><FiBarChart2 /></Link>
           <Button onClick={async () => { await companiesApi.remove(row._id); refresh(); }} size="sm" variant="ghost"><FiTrash2 className="text-danger" /></Button>

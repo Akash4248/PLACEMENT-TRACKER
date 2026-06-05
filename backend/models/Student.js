@@ -40,6 +40,24 @@ const studentSchema = new mongoose.Schema(
     },
 
     skills: [String],
+
+    resumeUrl: {
+      type: String,
+    },
+
+    resumeFileName: {
+      type: String,
+    },
+
+    resumeUploadedAt: {
+      type: Date,
+    },
+
+    resumeStatus: {
+      type: String,
+      enum: ["Pending", "Verified", "Rejected"],
+      default: "Pending",
+    },
   },
   {
     timestamps: true,

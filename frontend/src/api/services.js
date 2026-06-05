@@ -18,6 +18,17 @@ export const studentsApi = {
   create: (payload) => apiClient.post("/students", payload),
   update: (id, payload) => apiClient.put(`/students/${id}`, payload),
   remove: (id) => apiClient.delete(`/students/${id}`),
+  resume: (id) => apiClient.get(`/students/${id}/resume`),
+  uploadResume: (id, file, onUploadProgress) => {
+    const formData = new FormData();
+    formData.append("resume", file);
+    return apiClient.post(`/students/${id}/resume`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress,
+    });
+  },
+  verifyResume: (id) => apiClient.put(`/students/${id}/verify-resume`),
+  rejectResume: (id) => apiClient.put(`/students/${id}/reject-resume`),
   import: (file, onUploadProgress) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -32,6 +43,8 @@ export const companiesApi = {
   list: () => apiClient.get("/companies"),
   get: (id) => apiClient.get(`/companies/${id}`),
   eligibleStudents: (id) => apiClient.get(`/companies/${id}/eligible-students`),
+  shortlist: (id) => apiClient.get(`/companies/${id}/shortlist`),
+  shortlistPdf: (id) => apiClient.get(`/companies/${id}/shortlist/pdf`, { responseType: "blob" }),
   funnel: (id) => apiClient.get(`/companies/${id}/funnel`),
   analytics: (id) => apiClient.get(`/companies/${id}/analytics`),
   create: (payload) => apiClient.post("/companies", payload),

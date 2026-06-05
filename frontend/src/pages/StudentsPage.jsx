@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiEdit2, FiPlus, FiSearch, FiTrash2, FiUploadCloud } from "react-icons/fi";
+import { FiCheckCircle, FiDownload, FiEdit2, FiEye, FiPlus, FiSearch, FiTrash2, FiUploadCloud, FiXCircle } from "react-icons/fi";
+import toast from "react-hot-toast";
 import { studentsApi } from "../api/services";
+import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
 import DataTable from "../components/ui/DataTable";
 import FormField, { inputClass } from "../components/ui/FormField";
@@ -42,8 +44,10 @@ function StudentForm({ initialValues, onCancel, onSaved }) {
     try {
       if (initialValues?._id) {
         await studentsApi.update(initialValues._id, payload);
+        toast.success("Student updated");
       } else {
         await studentsApi.create(payload);
+        toast.success("Student created");
       }
       onSaved();
     } catch (err) {
@@ -99,6 +103,28 @@ export default function StudentsPage() {
     return response.students || [];
   }, [query]);
 
+  const uploadResume = async (student, file) => {
+    if (!file) return;
+
+    await studentsApi.uploadResume(student._id, file);
+    toast.success("Resume uploaded");
+    refresh();
+  };
+
+  const viewResume = async (student) => {
+    const { data: response } = await studentsApi.resume(student._id);
+    window.open(response.resumeUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const downloadResume = async (student) => {
+    const { data: response } = await studentsApi.resume(student._id);
+    const link = document.createElement("a");
+    link.href = response.resumeUrl;
+    link.download = response.resumeFileName || `${student.usn}-resume`;
+    link.target = "_blank";
+    link.click();
+  };
+
   const rows = data || [];
   const columns = useMemo(() => [
     { key: "usn", header: "USN" },
@@ -107,10 +133,33 @@ export default function StudentsPage() {
     { key: "department", header: "Department" },
     { key: "cgpa", header: "CGPA", render: (row) => <span className="font-semibold">{row.cgpa}</span> },
     {
+      key: "profile",
+      header: "Profile",
+      render: (row) => (
+        <div className="min-w-28">
+          <div className="mb-1 flex justify-between text-xs text-muted">
+            <span>{row.profileStrength || 0}%</span>
+          </div>
+          <div className="h-2 rounded-full bg-slate-100">
+            <div className="h-2 rounded-full bg-primary" style={{ width: `${row.profileStrength || 0}%` }} />
+          </div>
+        </div>
+      ),
+    },
+    { key: "resumeStatus", header: "Resume", render: (row) => <Badge label={row.resumeUrl ? row.resumeStatus : "Pending"} /> },
+    {
       key: "actions",
       header: "Actions",
       render: (row) => (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <label className="inline-flex h-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-white px-3 text-xs font-semibold text-ink transition hover:bg-slate-50">
+            <FiUploadCloud />
+            <input accept=".pdf,.doc,.docx" className="sr-only" onChange={(event) => uploadResume(row, event.target.files?.[0])} type="file" />
+          </label>
+          <Button disabled={!row.resumeUrl} onClick={() => viewResume(row)} size="sm" variant="secondary"><FiEye /></Button>
+          <Button disabled={!row.resumeUrl} onClick={() => downloadResume(row)} size="sm" variant="secondary"><FiDownload /></Button>
+          <Button disabled={!row.resumeUrl} onClick={async () => { await studentsApi.verifyResume(row._id); toast.success("Resume verified"); refresh(); }} size="sm" variant="secondary"><FiCheckCircle className="text-success" /></Button>
+          <Button disabled={!row.resumeUrl} onClick={async () => { await studentsApi.rejectResume(row._id); toast.success("Resume rejected"); refresh(); }} size="sm" variant="secondary"><FiXCircle className="text-danger" /></Button>
           <Button onClick={() => { setEditing({ ...row, skills: row.skills?.join(", ") || "" }); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
           <Button onClick={async () => { await studentsApi.remove(row._id); refresh(); }} size="sm" variant="ghost"><FiTrash2 className="text-danger" /></Button>
         </div>
@@ -147,6 +196,7 @@ export default function StudentsPage() {
         onSubmit={async (file, onProgress) => {
           const { data: response } = await studentsApi.import(file, onProgress);
           setImportSummary(response);
+          toast.success("Upload complete");
           refresh();
         }}
         open={importOpen}

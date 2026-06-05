@@ -21,6 +21,7 @@ import {
   FiUsers,
 } from "react-icons/fi";
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
 import { applicationsApi, companiesApi, reportsApi, studentsApi } from "../api/services";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -101,8 +102,10 @@ export default function ReportsPage() {
     try {
       const response = await loader();
       downloadBlob(response, filename);
+      toast.success("Export complete");
       setNotice({ type: "success", message: `${filename} generated successfully.` });
     } catch (err) {
+      toast.error("Export failed");
       setNotice({ type: "error", message: err.message || "Unable to generate report." });
     } finally {
       setDownloading("");

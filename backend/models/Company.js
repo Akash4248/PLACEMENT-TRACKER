@@ -39,6 +39,12 @@ const companySchema = new mongoose.Schema(
       },
     ],
 
+    allowedGraduationYears: [
+      {
+        type: Number,
+      },
+    ],
+
     driveDate: {
       type: Date,
     },

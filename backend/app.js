@@ -19,13 +19,38 @@ const { requestStats } = require("./middleware/requestStats");
 
 const app = express();
 const logsDir = path.join(__dirname, "logs");
+const uploadsDir = path.join(__dirname, "uploads");
 
 if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir, { recursive: true });
 }
 
-app.use(cors());
+const allowedOrigins = (process.env.FRONTEND_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.set("trust proxy", 1);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (
+        !origin ||
+        allowedOrigins.length === 0 ||
+        allowedOrigins.includes(origin) ||
+        /\.vercel\.app$/.test(origin)
+      ) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use("/uploads", express.static(uploadsDir));
 app.use(requestStats);
 app.use(
   morgan(":method :url :status :response-time ms", {
@@ -44,6 +69,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", systemRoutes);
+app.use("/api", systemRoutes);
 
 app.use("/api/auth", authRoutes);
 
