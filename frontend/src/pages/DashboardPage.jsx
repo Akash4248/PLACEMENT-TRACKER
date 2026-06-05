@@ -61,14 +61,12 @@ export default function DashboardPage() {
       analyticsResponse,
       departmentResponse,
       funnelResponse,
-      attendanceResponse,
       companiesResponse,
     ] = await Promise.all([
       dashboardApi.stats(),
       dashboardApi.companyAnalytics(),
       dashboardApi.departmentAnalytics(),
       dashboardApi.funnel(),
-      dashboardApi.attendance(),
       companiesApi.list(),
     ]);
 
@@ -76,7 +74,6 @@ export default function DashboardPage() {
       analytics: analyticsResponse.data.analytics || [],
       departmentAnalytics: departmentResponse.data.analytics || [],
       funnel: funnelResponse.data.funnel || {},
-      attendance: attendanceResponse.data.attendance || {},
       companies: companiesResponse.data.companies || [],
       stats: statsResponse.data.stats || {},
     };
@@ -86,7 +83,7 @@ export default function DashboardPage() {
   if (error) return <ErrorState message={error} onRetry={refresh} />;
 
   const stats = data.stats;
-  const attendance = data.attendance;
+  const attendance = stats.attendance || {};
   const chartData = data.analytics.map((item, index) => ({
     company: item.companyName || `Company ${index + 1}`,
     selected: item.selected,

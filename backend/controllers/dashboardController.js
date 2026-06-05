@@ -13,34 +13,43 @@ const getDashboardStats = async (
   res
 ) => {
   try {
-    const totalStudents =
-      await Student.countDocuments();
-
-    const totalCompanies =
-      await Company.countDocuments();
-
-    const totalApplications =
-      await Application.countDocuments();
-
-    const selected =
-      await Application.countDocuments({
+    const [
+      totalStudents,
+      totalCompanies,
+      totalApplications,
+      selected,
+      rejected,
+      inProcess,
+      offerReceived,
+      applicationsForAttendance,
+    ] = await Promise.all([
+      Student.countDocuments(),
+      Company.countDocuments(),
+      Application.countDocuments(),
+      Application.countDocuments({
         status: "Selected",
-      });
-
-    const rejected =
-      await Application.countDocuments({
+      }),
+      Application.countDocuments({
         status: "Rejected",
-      });
-
-    const inProcess =
-      await Application.countDocuments({
+      }),
+      Application.countDocuments({
         status: "In Process",
-      });
-
-    const offerReceived =
-      await Application.countDocuments({
+      }),
+      Application.countDocuments({
         status: "Offer Received",
-      });
+      }),
+      Application.find().select("rounds"),
+    ]);
+    const attendanceRecords = applicationsForAttendance.flatMap((application) =>
+      application.rounds.filter((round) => normalizeAttendanceStatus(round) !== "Not Marked")
+    );
+    const present = attendanceRecords.filter(
+      (round) => normalizeAttendanceStatus(round) === "Present"
+    ).length;
+    const absent = attendanceRecords.filter(
+      (round) => normalizeAttendanceStatus(round) === "Absent"
+    ).length;
+    const totalAttendanceRecords = present + absent;
 
     res.json({
       success: true,
@@ -52,6 +61,14 @@ const getDashboardStats = async (
         rejected,
         inProcess,
         offerReceived,
+        attendance: {
+          totalCandidates: totalAttendanceRecords,
+          present,
+          absent,
+          attendanceRate: totalAttendanceRecords
+            ? Math.round((present / totalAttendanceRecords) * 100)
+            : 0,
+        },
       },
     });
   } catch (error) {
