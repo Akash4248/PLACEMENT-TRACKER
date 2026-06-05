@@ -12,6 +12,8 @@ const {
   updateCompany,
   deleteCompany,
   getEligibleStudents,
+  getCompanyFunnel,
+  getCompanyAnalytics,
 } = require("../controllers/companyController");
 
 const {
@@ -26,6 +28,8 @@ router.get(
   "/:id/eligible-students",
   getEligibleStudents
 );
+router.get("/:id/funnel", getCompanyFunnel);
+router.get("/:id/analytics", getCompanyAnalytics);
 router.get("/:id", getCompany);
 router.put("/:id", updateCompany);
 router.delete(

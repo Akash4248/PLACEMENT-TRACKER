@@ -84,9 +84,10 @@ export default function DashboardPage() {
 
   const stats = data.stats;
   const chartData = data.analytics.map((item, index) => ({
-    company: item._id?.companyName || `Company ${index + 1}`,
+    company: item.companyName || `Company ${index + 1}`,
     selected: item.selected,
     totalApplicants: item.totalApplicants,
+    selectionRate: item.selectionRate || 0,
   }));
   const statusData = [
     { name: "Selected", value: stats.selected || 0 },
@@ -105,6 +106,8 @@ export default function DashboardPage() {
     .filter((company) => company.driveDate && daysRemaining(company.driveDate) >= 0)
     .sort((a, b) => new Date(a.driveDate) - new Date(b.driveDate))
     .slice(0, 10);
+  const activeRecruitments = data.companies.filter((company) => company.status === "Ongoing" || company.status === "Upcoming").length;
+  const topRecruiters = [...chartData].sort((a, b) => b.selected - a.selected).slice(0, 5);
 
   return (
     <>
@@ -112,13 +115,15 @@ export default function DashboardPage() {
         description="A real-time view of placement activity, pipeline health, and offer outcomes."
         title="Dashboard"
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-8">
         <KpiCard icon={FiUsers} label="Students" trend="+12% this term" value={stats.totalStudents} />
         <KpiCard icon={FiBriefcase} label="Companies" trend="+8% drives" value={stats.totalCompanies} />
         <KpiCard icon={FiFileText} label="Applications" trend="+18% activity" value={stats.totalApplications} />
         <KpiCard icon={FiCheckCircle} label="Selected" trend="On track" value={stats.selected} />
         <KpiCard icon={FiXCircle} label="Rejected" trend="Reviewed" value={stats.rejected} />
         <KpiCard icon={FiGift} label="Offers" trend="Finalized" value={stats.offerReceived} />
+        <KpiCard icon={FiBriefcase} label="Upcoming Drives" trend="Scheduled" value={upcomingDrives.length} />
+        <KpiCard icon={FiTrendingUp} label="Active Recruitments" trend="Open" value={activeRecruitments} />
       </div>
 
       <div className="mt-6 grid gap-6 xl:grid-cols-2">
@@ -229,6 +234,35 @@ export default function DashboardPage() {
             No upcoming drives scheduled.
           </div>
         )}
+      </Card>
+
+      <Card className="mt-6 p-5">
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold text-ink">Top Recruiting Companies</h2>
+          <p className="mt-1 text-sm text-muted">Sorted by selected candidates.</p>
+        </div>
+        <div className="overflow-x-auto thin-scrollbar">
+          <table className="w-full min-w-[620px] text-left text-sm">
+            <thead className="border-b border-border bg-slate-50 text-xs uppercase text-muted">
+              <tr>
+                <th className="px-4 py-3">Company</th>
+                <th className="px-4 py-3">Applicants</th>
+                <th className="px-4 py-3">Selected</th>
+                <th className="px-4 py-3">Selection Rate</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {topRecruiters.map((company) => (
+                <tr key={company.company}>
+                  <td className="px-4 py-3 font-semibold text-ink">{company.company}</td>
+                  <td className="px-4 py-3 text-muted">{company.totalApplicants}</td>
+                  <td className="px-4 py-3 text-muted">{company.selected}</td>
+                  <td className="px-4 py-3 text-primary font-semibold">{company.selectionRate}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Card>
     </>
   );

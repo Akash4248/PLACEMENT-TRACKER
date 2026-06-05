@@ -253,6 +253,112 @@ const bulkUploadResults = async (req, res) => {
   }
 };
 
+const bulkPassApplications = async (req, res) => {
+  try {
+    const { applicationIds = [] } = req.body;
+    let affectedCount = 0;
+
+    const applications = await Application.find({
+      _id: { $in: applicationIds },
+    });
+
+    for (const application of applications) {
+      const rounds = await InterviewRound.find({
+        companyId: application.companyId,
+      }).sort({ sequence: 1 });
+      const round =
+        rounds[Math.max(0, application.currentRound - 1)] ||
+        rounds[rounds.length - 1];
+
+      await applyRoundResult(application, {
+        roundId: round?._id,
+        attended: true,
+        result: "PASS",
+      });
+      affectedCount += 1;
+    }
+
+    res.json({ success: true, affectedCount });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const bulkRejectApplications = async (req, res) => {
+  try {
+    const { applicationIds = [] } = req.body;
+    let affectedCount = 0;
+    const applications = await Application.find({
+      _id: { $in: applicationIds },
+    });
+
+    for (const application of applications) {
+      const rounds = await InterviewRound.find({
+        companyId: application.companyId,
+      }).sort({ sequence: 1 });
+      const round =
+        rounds[Math.max(0, application.currentRound - 1)] ||
+        rounds[rounds.length - 1];
+
+      await applyRoundResult(application, {
+        roundId: round?._id,
+        attended: true,
+        result: "FAIL",
+      });
+      affectedCount += 1;
+    }
+
+    res.json({ success: true, affectedCount });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const bulkOfferApplications = async (req, res) => {
+  try {
+    const { applicationIds = [] } = req.body;
+    const result = await Application.updateMany(
+      { _id: { $in: applicationIds } },
+      { $set: { status: "Offer Received" } }
+    );
+
+    res.json({
+      success: true,
+      affectedCount: result.modifiedCount,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const bulkDeleteApplications = async (req, res) => {
+  try {
+    const { applicationIds = [] } = req.body;
+    const result = await Application.deleteMany({
+      _id: { $in: applicationIds },
+    });
+
+    res.json({
+      success: true,
+      affectedCount: result.deletedCount,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 const getApplication = async (
   req,
   res
@@ -348,4 +454,8 @@ module.exports = {
   markOfferReceived,
   deleteApplication,
   bulkUploadResults,
+  bulkPassApplications,
+  bulkRejectApplications,
+  bulkOfferApplications,
+  bulkDeleteApplications,
 };

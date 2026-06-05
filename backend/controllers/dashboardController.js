@@ -82,6 +82,58 @@ const getCompanyAnalytics =
               },
             },
           },
+          {
+            $lookup: {
+              from: "companies",
+              localField: "_id",
+              foreignField: "_id",
+              as: "company",
+            },
+          },
+          {
+            $unwind: {
+              path: "$company",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $addFields: {
+              companyName:
+                "$company.companyName",
+              selectionRate: {
+                $cond: [
+                  {
+                    $gt: [
+                      "$totalApplicants",
+                      0,
+                    ],
+                  },
+                  {
+                    $round: [
+                      {
+                        $multiply: [
+                          {
+                            $divide: [
+                              "$selected",
+                              "$totalApplicants",
+                            ],
+                          },
+                          100,
+                        ],
+                      },
+                      0,
+                    ],
+                  },
+                  0,
+                ],
+              },
+            },
+          },
+          {
+            $sort: {
+              selected: -1,
+            },
+          },
         ]);
 
       res.json({

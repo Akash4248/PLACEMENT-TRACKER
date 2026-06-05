@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiEdit2, FiEye, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiBarChart2, FiEdit2, FiEye, FiPlus, FiTrash2 } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { companiesApi } from "../api/services";
 import Badge from "../components/ui/Badge";
 import Button from "../components/ui/Button";
@@ -134,6 +135,7 @@ export default function CompaniesPage() {
         <div className="flex gap-2">
           <Button onClick={() => { setEditing({ ...row, driveDate: row.driveDate?.slice(0, 10) || "", allowedDepartments: row.allowedDepartments?.join(", ") || "" }); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
           <Button onClick={() => viewEligibility(row)} size="sm" variant="secondary"><FiEye /></Button>
+          <Link className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-white px-3 text-xs font-semibold text-ink transition hover:bg-slate-50" to={`/companies/${row._id}/analytics`}><FiBarChart2 /></Link>
           <Button onClick={async () => { await companiesApi.remove(row._id); refresh(); }} size="sm" variant="ghost"><FiTrash2 className="text-danger" /></Button>
         </div>
       ),

@@ -10,6 +10,10 @@ const {
   markOfferReceived,
   deleteApplication,
   bulkUploadResults,
+  bulkPassApplications,
+  bulkRejectApplications,
+  bulkOfferApplications,
+  bulkDeleteApplications,
 } = require("../controllers/applicationController");
 const upload = require("../middleware/uploadMiddleware");
 const {
@@ -35,6 +39,11 @@ router.post(
   upload.single("file"),
   bulkUploadResults
 );
+
+router.post("/bulk/pass", bulkPassApplications);
+router.post("/bulk/reject", bulkRejectApplications);
+router.post("/bulk/offer", bulkOfferApplications);
+router.post("/bulk/delete", bulkDeleteApplications);
 
 router.put(
   "/:id/result",

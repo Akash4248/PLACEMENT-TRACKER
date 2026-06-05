@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiEdit2, FiPlus, FiTrash2 } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import { companiesApi, roundsApi } from "../api/services";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -64,6 +65,7 @@ function RoundForm({ companyId, initialValues, onCancel, onSaved }) {
 export default function RoundsPage() {
   const [selectedCompany, setSelectedCompany] = useState("");
   const [rounds, setRounds] = useState([]);
+  const [analytics, setAnalytics] = useState([]);
   const [roundLoading, setRoundLoading] = useState(false);
   const [roundError, setRoundError] = useState("");
   const [editing, setEditing] = useState(null);
@@ -83,8 +85,12 @@ export default function RoundsPage() {
     setRoundLoading(true);
     setRoundError("");
     try {
-      const { data } = await roundsApi.byCompany(selectedCompany);
-      setRounds(data.rounds || []);
+      const [roundResponse, analyticsResponse] = await Promise.all([
+        roundsApi.byCompany(selectedCompany),
+        roundsApi.analyticsByCompany(selectedCompany),
+      ]);
+      setRounds(roundResponse.data.rounds || []);
+      setAnalytics(analyticsResponse.data.analytics || []);
     } catch (err) {
       setRoundError(err.message);
     } finally {
@@ -103,7 +109,7 @@ export default function RoundsPage() {
     <>
       <PageHeader
         action={<Button disabled={!selectedCompany} onClick={() => { setEditing(null); setModalOpen(true); }}><FiPlus />Add Round</Button>}
-        description="Create the round sequence used to evaluate candidates for each company drive."
+        description="Round-level analytics and bulk candidate management for each company drive."
         title="Interview Rounds"
       />
       <Card className="mb-6 p-5">
@@ -113,34 +119,37 @@ export default function RoundsPage() {
           </select>
         </FormField>
       </Card>
-      {roundLoading ? <LoadingState label="Loading rounds" /> : null}
+      {roundLoading ? <LoadingState label="Loading round analytics" /> : null}
       {roundError ? <ErrorState message={roundError} onRetry={loadRounds} /> : null}
       {!roundLoading && !roundError ? (
         <Card className="p-6">
           {rounds.length === 0 ? (
             <EmptyState description="Add the first round for this company to create its interview timeline." title="No rounds configured" />
           ) : (
-            <div className="space-y-5">
-              {rounds.map((round, index) => (
-                <div className="flex gap-4" key={round._id}>
-                  <div className="flex flex-col items-center">
-                    <div className="grid h-9 w-9 place-items-center rounded-full bg-primary text-sm font-bold text-white">{round.sequence}</div>
-                    {index < rounds.length - 1 ? <div className="mt-2 h-full w-px bg-border" /> : null}
-                  </div>
-                  <div className="flex-1 rounded-2xl border border-border bg-slate-50 p-4">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <h3 className="text-base font-semibold text-ink">{round.roundName}</h3>
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {rounds.map((round) => {
+                const item = analytics.find((entry) => entry._id === round._id) || {};
+                return (
+                  <div className="rounded-2xl border border-border bg-slate-50 p-5" key={round._id}>
+                    <div className="flex items-start justify-between gap-3">
+                      <Link to={`/rounds/${round._id}`}>
+                        <h3 className="text-base font-semibold text-ink hover:text-primary">{round.roundName}</h3>
                         <p className="mt-1 text-sm text-muted">{round.roundType}</p>
-                      </div>
+                      </Link>
                       <div className="flex gap-2">
                         <Button onClick={() => { setEditing(round); setModalOpen(true); }} size="sm" variant="secondary"><FiEdit2 /></Button>
                         <Button onClick={async () => { await roundsApi.remove(round._id); loadRounds(); }} size="sm" variant="ghost"><FiTrash2 className="text-danger" /></Button>
                       </div>
                     </div>
+                    <div className="mt-5 grid grid-cols-2 gap-3">
+                      <div><p className="text-xl font-bold text-ink">{item.appeared || 0}</p><p className="text-xs text-muted">Appeared</p></div>
+                      <div><p className="text-xl font-bold text-success">{item.passed || 0}</p><p className="text-xs text-muted">Passed</p></div>
+                      <div><p className="text-xl font-bold text-danger">{item.failed || 0}</p><p className="text-xs text-muted">Failed</p></div>
+                      <div><p className="text-xl font-bold text-primary">{item.passRate || 0}%</p><p className="text-xs text-muted">Pass Rate</p></div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </Card>

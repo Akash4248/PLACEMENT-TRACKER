@@ -3,10 +3,12 @@ import AppLayout from "../components/layout/AppLayout";
 import ProtectedRoute from "../components/layout/ProtectedRoute";
 import ApplicationsPage from "../pages/ApplicationsPage";
 import CompaniesPage from "../pages/CompaniesPage";
+import CompanyAnalyticsPage from "../pages/CompanyAnalyticsPage";
 import DashboardPage from "../pages/DashboardPage";
 import LoginPage from "../pages/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import ReportsPage from "../pages/ReportsPage";
+import RoundDetailPage from "../pages/RoundDetailPage";
 import RoundsPage from "../pages/RoundsPage";
 import SignupPage from "../pages/SignupPage";
 import StudentsPage from "../pages/StudentsPage";
@@ -28,8 +30,10 @@ export default function AppRoutes() {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="students" element={<StudentsPage />} />
         <Route path="companies" element={<CompaniesPage />} />
+        <Route path="companies/:companyId/analytics" element={<CompanyAnalyticsPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="rounds" element={<RoundsPage />} />
+        <Route path="rounds/:roundId" element={<RoundDetailPage />} />
         <Route path="reports" element={<ReportsPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
