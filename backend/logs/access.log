@@ -1,0 +1,12 @@
+GET /api/auth/me 304 43.520 ms
+GET /api/auth/me 304 34.576 ms
+GET /api/dashboard/company-analytics 200 81.360 ms
+GET /api/dashboard/company-analytics 200 44.944 ms
+GET /api/dashboard/stats 304 260.923 ms
+GET /api/companies 304 407.653 ms
+GET /api/companies 304 34.079 ms
+GET /api/dashboard/department-analytics 200 512.607 ms
+GET /api/dashboard/funnel 304 826.912 ms
+GET /api/dashboard/stats 304 573.857 ms
+GET /api/dashboard/department-analytics 200 550.292 ms
+GET /api/dashboard/funnel 304 722.804 ms

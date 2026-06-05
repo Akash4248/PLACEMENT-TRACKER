@@ -70,3 +70,20 @@ export const roundsApi = {
   update: (id, payload) => apiClient.put(`/rounds/${id}`, payload),
   remove: (id) => apiClient.delete(`/rounds/${id}`),
 };
+
+export const reportsApi = {
+  placementAnalyticsPdf: () =>
+    apiClient.get("/reports/placement-analytics/pdf", { responseType: "blob" }),
+  placementAnalyticsXlsx: () =>
+    apiClient.get("/reports/placement-analytics/xlsx", { responseType: "blob" }),
+  companyPdf: (companyId) =>
+    apiClient.get(`/reports/company/${companyId}/pdf`, { responseType: "blob" }),
+  departmentPdf: (department) =>
+    apiClient.get(`/reports/department/${encodeURIComponent(department)}/pdf`, {
+      responseType: "blob",
+    }),
+  studentPdf: (studentId) =>
+    apiClient.get(`/reports/student/${studentId}/pdf`, { responseType: "blob" }),
+  funnelPdf: () =>
+    apiClient.get("/reports/funnel/pdf", { responseType: "blob" }),
+};
